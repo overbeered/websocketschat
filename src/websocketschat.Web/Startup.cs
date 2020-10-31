@@ -21,6 +21,7 @@ using websocketschat.Core.Services.Interfaces;
 using websocketschat.Database.Context;
 using websocketschat.Database.Repositories;
 using websocketschat.Web.Helpers.Auth;
+using websocketschat.Web.Hubs;
 
 namespace websocketschat.Web
 {
@@ -88,20 +89,21 @@ namespace websocketschat.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }
