@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -11,7 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\websocketschat.Core\websocketschat.Core.csproj" />
     <ProjectReference Include="..\websocketschat.Database.Context\websocketschat.Database.Context.csproj" />
-    <ProjectReference Include="..\websocketschat.Web\websocketschat.Web.csproj" />
   </ItemGroup>
 
 </Project>

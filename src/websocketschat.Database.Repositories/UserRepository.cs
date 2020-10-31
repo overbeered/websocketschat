@@ -63,5 +63,10 @@ namespace websocketschat.Database.Repositories
 
             return _mapper.Map<CoreModels.User>(storedUser);
         }
+
+        public async Task<bool> UserExistsAsync(string username)
+        {
+            return await _dbContext.Users.AnyAsync(user => user.Username == username);
+        }
     }
 }

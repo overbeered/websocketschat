@@ -12,7 +12,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using websocketschat.Core.Repositories;
+using websocketschat.Core.Services.Implementations;
+using websocketschat.Core.Services.Interfaces;
 using websocketschat.Database.Context;
+using websocketschat.Database.Repositories;
 
 namespace websocketschat.Web
 {
@@ -33,6 +37,11 @@ namespace websocketschat.Web
             services.AddDbContext<NpgSqlContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddTransient<IUserRepository, UserRepository>();
+
+            services.AddTransient<IUserService, UserService>();
+
+            services.AddSignalR();
             services.AddControllers();
         }
 
