@@ -14,6 +14,7 @@ namespace websocketschat.Core.Repositories
         Task AddUserAsync(User coreUser);
         Task<User> GetUserAsync(string username);
         Task<User> GetUserWithRoleAsync(string username);
+        Task<bool> UserExistsAsync(string username);
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<IEnumerable<User>> GetAllUsersWithRolesAsync();
     }
