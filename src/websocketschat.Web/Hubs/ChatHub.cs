@@ -20,5 +20,15 @@ namespace websocketschat.Web.Hubs
         {
             await Clients.All.SendAsync("Receive", message, userName);
         }
+        public override async Task OnConnectedAsync()
+        {
+            await Clients.All.SendAsync("Notify", $"{Context.GetHttpContext().User.Identity.Name} вошел в чат");
+            await base.OnConnectedAsync();
+        }
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            await Clients.All.SendAsync("Notify", $"{Context.GetHttpContext().User.Identity.Name} покинул в чат");
+            await base.OnDisconnectedAsync(exception);
+        }
     }
 }

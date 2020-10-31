@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -39,6 +40,19 @@
             elem.appendChild(userNameElem);
             elem.appendChild(document.createTextNode(message));
 
+            var firstElem = document.getElementById("chatroom").firstChild;
+            document.getElementById("chatroom").insertBefore(elem, firstElem);
+        });
+
+        // уведомляем о входе-выходе из чата.
+        hubConnection.on('Notify', function (message) {
+
+            // добавляет элемент для диагностического сообщения
+            let notifyElem = document.createElement("b");
+            notifyElem.appendChild(document.createTextNode(message));
+
+            let elem = document.createElement("p");
+            elem.appendChild(notifyElem);
             var firstElem = document.getElementById("chatroom").firstChild;
             document.getElementById("chatroom").insertBefore(elem, firstElem);
         });
