@@ -37,7 +37,7 @@ namespace websocketschat.Web.Controllers
             _authOptions = authOptions.Value;
         }
 
-        //POST api/accounts/register
+        //POST api/Accounts/register
         [HttpPost]
         [Route("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -53,12 +53,14 @@ namespace websocketschat.Web.Controllers
             return StatusCode(400);
         }
 
-        //POST api/accounts/token
+        //POST api/Accounts/token
         [HttpPost]
         [Route("token")]
-        public async Task<IActionResult> Token(PostUserDto userDto)
+        public async Task<IActionResult> Token([FromForm] PostUserDto userDto)
         {
             ClaimsIdentity identity = await GetIdentity(userDto.Username, userDto.Password);
+
+            Console.WriteLine("Username: " + userDto.Username + " Password: " + userDto.Password);
 
             if (identity == null)
             {
@@ -86,7 +88,7 @@ namespace websocketschat.Web.Controllers
                 username = identity.Name
             };
 
-            return StatusCode(200, new { Token = response.access_token });
+            return StatusCode(200, new { access_token = response.access_token, username = response.username });
         }
 
         private async Task<ClaimsIdentity> GetIdentity(string username, string password)
