@@ -122,7 +122,7 @@ namespace websocketschat.Core.Services.Implementations
             {
                 try
                 {
-                    return await _userRepository.GetUserAsync(username);
+                    return await _userRepository.GetUserWithRoleAsync(username);
                 }
                 catch (Exception ex)
                 {
