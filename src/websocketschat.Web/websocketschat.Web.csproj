@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Helpers\Auth\" />
   </ItemGroup>
 
@@ -28,6 +27,7 @@
     <ProjectReference Include="..\websocketschat.Core\websocketschat.Core.csproj" />
     <ProjectReference Include="..\websocketschat.Database.Context\websocketschat.Database.Context.csproj" />
     <ProjectReference Include="..\websocketschat.Database.Repositories\websocketschat.Database.Repositories.csproj" />
+    <ProjectReference Include="..\websocketschat.Datatransfer.HttpDto\websocketschat.Datatransfer.HttpDto.csproj" />
   </ItemGroup>
 
 

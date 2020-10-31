@@ -5,16 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using DbModels = websocketschat.Database.Models;
 using CoreModels = websocketschat.Core.Models;
+using websocketschat.Datatransfer.HttpDto;
 
 namespace websocketschat.Web.Helpers.Converters
 {
-    public class UserProfile : Profile
+    public class UserConverter : Profile
     {
-        public UserProfile()
+        public UserConverter()
         {
-          //  CreateMap<PostUserDto, UserModel>().ReverseMap();
-          //  CreateMap<GetUserDto, UserModel>().ReverseMap();
-          //  CreateMap<LoginUserDto, UserModel>().ReverseMap();
+            CreateMap<PostUserDto, CoreModels.User>().ReverseMap();
+            CreateMap<GetUserDto, CoreModels.User>().ReverseMap();
 
             CreateMap<DbModels.User, CoreModels.User>().ReverseMap();
         }
