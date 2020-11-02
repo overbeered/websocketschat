@@ -1,0 +1,27 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+WORKDIR /src
+COPY ["websocketschat.Web/websocketschat.Web.csproj", "websocketschat.Web/"]
+COPY ["websocketschat.Database.Context/websocketschat.Database.Context.csproj", "websocketschat.Database.Context/"]
+COPY ["websocketschat.Database.Models/websocketschat.Database.Models.csproj", "websocketschat.Database.Models/"]
+COPY ["websocketschat.Datatransfer.HttpDto/websocketschat.Datatransfer.HttpDto.csproj", "websocketschat.Datatransfer.HttpDto/"]
+COPY ["websocketschat.Core/websocketschat.Core.csproj", "websocketschat.Core/"]
+COPY ["websocketschat.Database.Repositories/websocketschat.Database.Repositories.csproj", "websocketschat.Database.Repositories/"]
+RUN dotnet restore "websocketschat.Web/websocketschat.Web.csproj"
+COPY . .
+WORKDIR "/src/websocketschat.Web"
+RUN dotnet build "websocketschat.Web.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "websocketschat.Web.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "websocketschat.Web.dll"]

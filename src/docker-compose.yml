@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  websocketschat.web:
+    image: ${DOCKER_REGISTRY-}websocketschatweb
+    build:
+      context: .
+      dockerfile: websocketschat.Web/Dockerfile
