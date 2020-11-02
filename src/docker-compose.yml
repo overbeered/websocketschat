@@ -6,3 +6,5 @@ services:
     build:
       context: .
       dockerfile: websocketschat.Web/Dockerfile
+    ports:
+      - "7777:5000"

@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>de3d37a3-3336-40ca-8a25-05afc3679f2e</ProjectGuid>
+    <ProjectGuid>36994c53-1a19-4206-b2b8-e73534d1a960</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>websocketschat.web</DockerServiceName>
