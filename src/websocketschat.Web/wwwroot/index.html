@@ -84,33 +84,28 @@
             <a type="button" onclick="continueToAuth()">Авторизация</a>
         </div>
     </div>
-
-    <div class="p-4 chat" id="chat" >
+    <div class="p-4 chat" id="chat">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex bd-highlight">
                     <div class="p-2 bd-highlight">
                         <a href="/"><button class="btn btn-primary">Выход</button></a>
                     </div>
-                    <div class="p-2 flex-grow-1 bd-highlight">
-                        <input type="" class="form-control" placeholder="Кому...">
-                    </div>
                 </div>
             </div>
 
-            <div id="chat-window"></div>
+          
             <div class="card-body" style="height: 60vh;">
-
+                <div id="chat-window"></div>
             </div>
             <div class="card-footer text-muted">
                 <form>
                     <div class="d-flex bd-highlight">
                         <div class="p-2 flex-grow-1 bd-highlight">
-                            <input type="" class="form-control" placeholder="Напишите текст...">
+                            <input type="text" id="message" class="form-control" placeholder="Напишите текст...">
                         </div>
                         <div class="p-2 bd-highlight">
-                            <button type="submit" class="btn btn-primary mb-2">Отправить лс</button>
-                            <button type="submit" id="sendBtn" class="btn btn-primary mb-2">Отправить всем</button>
+                            <button type="button" id="sendBtn" class="btn btn-primary mb-2">Отправить всем</button>
                         </div>
                     </div>
                 </form>
@@ -118,10 +113,19 @@
         </div>
     </div>
 
+
     <script ENGINE="text/javascript" src="https://code.jquery.com/jquery-1.11.2.js "></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="js/signalr/dist/browser/signalr.min.js"></script>
     <script>
+
+        function messageCountHandler() {
+            if (countChatMessages >= 11) {
+                let count = countChatMessages - 11;
+                $(`#message-${count}`).hide();
+            }
+        }
+
         function continueToAuth() {
             $('#chat').hide();
             $('#registration').hide();
@@ -133,7 +137,7 @@
             $('#auth').hide();
         }
 
-
+        let countChatMessages = 0;
         let token;      // токен
         let username;   // имя пользователя
         const hubConnection = new signalR.HubConnectionBuilder()
@@ -147,6 +151,18 @@
             $('#registration').hide();
             $('#auth').hide();
 
+            let notifyElem = document.createElement("b");
+            notifyElem.appendChild(document.createTextNode(message));
+
+            let elem = document.createElement("p");
+            elem.setAttribute("id", "message-" + countChatMessages++);
+            elem.appendChild(notifyElem);
+            var firstElem = document.getElementById("chat-window").firstChild;
+            document.getElementById("chat-window").insertBefore(elem, firstElem);
+
+            // Считаем кол-во сообщений по глобальному счетчику countChatMessages
+            // И выводим только те сообщения, которые проходят условие
+            messageCountHandler();
         });
 
         // аутентификация
@@ -163,16 +179,15 @@
                     token = data.access_token;
                     username = data.username;
 
-                    //  document.getElementById("sendBtn").disabled = false;
 
                     hubConnection.start()       // начинаем соединение с хабом
                         .catch(err => {
                             console.error(err.toString());
                             document.getElementById("loginBtn").disabled = true;
-                            //            document.getElementById("sendBtn").disabled = true;
                         });
                 }
             });
+
             // отправляем запрос на аутентификацию
             request.send("username=" + document.getElementById("userName").value +
                 "&password=" + document.getElementById("userPassword").value);
@@ -186,11 +201,18 @@
 
             // создает элемент <p> для сообщения пользователя
             let elem = document.createElement("p");
+
+            elem.setAttribute("id", "message-" + countChatMessages++);
+
             elem.appendChild(userNameElem);
             elem.appendChild(document.createTextNode(message));
 
             var firstElem = document.getElementById("chat-window").firstChild;
             document.getElementById("chat-window").insertBefore(elem, firstElem);
+
+            // Считаем кол-во сообщений по глобальному счетчику countChatMessages
+            // И выводим только те сообщения, которые проходят условие
+            messageCountHandler();
         });
 
         document.getElementById("sendBtn").addEventListener("click", function (e) {
