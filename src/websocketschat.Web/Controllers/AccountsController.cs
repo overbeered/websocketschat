@@ -42,10 +42,14 @@ namespace websocketschat.Web.Controllers
         [Route("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> RegisterUser(PostUserDto userDto)
+        public async Task<ActionResult> RegisterUser([FromForm] PostUserDto userDto)
         {
+            Console.WriteLine(userDto);
+
             CoreModels.User coreUser = _mapper.Map<CoreModels.User>(userDto);
             bool isCreated = await _userService.AddUserAsync(coreUser, userDto.Password);
+
+            Console.WriteLine(isCreated);
 
             if (isCreated)
                 return StatusCode(201);

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using websocketschat.Web.Helpers.MessageHandler;
 
 namespace websocketschat.Web.Hubs
 {
@@ -18,7 +19,9 @@ namespace websocketschat.Web.Hubs
         }
         public async Task Send(string message, string userName)
         {
-            await Clients.All.SendAsync("Receive", message, userName);
+            string finalMessage = CommandHandler.Execute(message);
+
+            await Clients.All.SendAsync("Receive", finalMessage, userName);
         }
         public override async Task OnConnectedAsync()
         {

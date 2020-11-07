@@ -45,45 +45,38 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);">
-        <form>
             <div class="text-center">
                 <img class="mb-3" src="../images/overbeered.jpg" alt="" width="72" height="72">
                 <h1 class="mb-3">Web socket</h1>
             </div>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">login</span>
+                    <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
                 </div>
                 <input type="text" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="inputGroup-sizing-default">
-            </div>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Email</span>
-                </div>
-                <input type="text" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="inputGroup-sizing-default">
+                       aria-describedby="inputGroup-sizing-default" id="userNameRegistration">
             </div>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-default">Пароль</span>
                 </div>
                 <input type="text" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="inputGroup-sizing-default">
+                       aria-describedby="inputGroup-sizing-default" id="userPasswordRegistration">
             </div>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-default">Повторите</span>
                 </div>
                 <input type="text" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="inputGroup-sizing-default">
+                       aria-describedby="inputGroup-sizing-default" id="userPasswordCopyRegistration">
             </div>
-            <button type="button" class="btn btn-primary btn-lg btn-block">Регистрация</button>
-        </form>
+            <button type="button" id="registerBtn" class="btn btn-primary btn-lg btn-block">Регистрация</button>
+       
         <div class="text-center">
             <a type="button" onclick="continueToAuth()">Авторизация</a>
         </div>
     </div>
+
     <div class="p-4 chat" id="chat">
         <div class="card">
             <div class="card-header">
@@ -172,6 +165,7 @@
             // посылаем запрос на адрес "/token", в ответ получим токен и имя пользователя
             request.open("POST", "api/Accounts/token", true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
             request.addEventListener("load", function () {
                 if (request.status < 400) { // если запрос успешный
 
@@ -183,7 +177,7 @@
                     hubConnection.start()       // начинаем соединение с хабом
                         .catch(err => {
                             console.error(err.toString());
-                            document.getElementById("loginBtn").disabled = true;
+                          //  document.getElementById("loginBtn").disabled = true;
                         });
                 }
             });
@@ -192,6 +186,36 @@
             request.send("username=" + document.getElementById("userName").value +
                 "&password=" + document.getElementById("userPassword").value);
         });
+
+        // регистрация
+        document.getElementById("registerBtn").addEventListener("click", function (e) {
+
+            var request = new XMLHttpRequest();
+            // посылаем запрос на адрес "/token", в ответ получим токен и имя пользователя
+            request.open("POST", "api/Accounts/register", true);
+            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            request.addEventListener("load", function () {
+
+                if (request.status == 201) {
+                    alert("Регистрация прошла успешно");
+                    continueToAuth();
+                }
+                else {
+                    alert("Вы не прошли регистрацию");
+                }
+            });
+
+            if (document.getElementById("userPasswordRegistration").value == document.getElementById("userPasswordCopyRegistration").value) {
+                // отправляем запрос на регистрацию
+                request.send("username=" + document.getElementById("userNameRegistration").value +
+                    "&password=" + document.getElementById("userPasswordRegistration").value);
+            } else {
+                alert("Пароли разные");
+            }
+
+        });
+
 
         hubConnection.on("Receive", function (message, userName) {
 
