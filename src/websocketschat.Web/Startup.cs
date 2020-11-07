@@ -21,6 +21,7 @@ using websocketschat.Core.Services.Interfaces;
 using websocketschat.Database.Context;
 using websocketschat.Database.Repositories;
 using websocketschat.Web.Helpers.Auth;
+using websocketschat.Web.Helpers.MessageHandler;
 using websocketschat.Web.Hubs;
 
 namespace websocketschat.Web
@@ -46,7 +47,9 @@ namespace websocketschat.Web
 
             services.AddTransient<IUserRepository, UserRepository>();
 
-            services.AddTransient<IUserService, UserService>();
+            services.AddScoped<IUserService, UserService>();
+
+            services.AddTransient<MessageHandler>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
