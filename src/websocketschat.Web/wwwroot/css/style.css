@@ -50,3 +50,12 @@ a:hover {
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(224,175,52,.5);
 }
+
+
+.registration {
+    display: none;
+}
+
+.chat {
+    display: none;
+}

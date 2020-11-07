@@ -22,11 +22,13 @@ namespace websocketschat.Web.Hubs
         }
         public override async Task OnConnectedAsync()
         {
+            Console.WriteLine("Подключился " + Context.GetHttpContext().User.Identity.Name);
             await Clients.All.SendAsync("Notify", $"{Context.GetHttpContext().User.Identity.Name} вошел в чат");
             await base.OnConnectedAsync();
         }
         public override async Task OnDisconnectedAsync(Exception exception)
         {
+            Console.WriteLine("Отключился " + Context.GetHttpContext().User.Identity.Name);
             await Clients.All.SendAsync("Notify", $"{Context.GetHttpContext().User.Identity.Name} покинул в чат");
             await base.OnDisconnectedAsync(exception);
         }
