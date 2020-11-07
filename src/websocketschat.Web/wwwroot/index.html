@@ -3,44 +3,166 @@
 <head>
     <meta charset="utf-8" />
     <title>SignalR Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/style.css">
+    <script>
+
+    </script>
 </head>
 <body>
-    <div id="loginBlock">
-        Введите логин:<br />
-        <input id="userName" type="text" />
-        <input id="userPassword" type="text" />
-        <input id="loginBtn" type="button" value="Войти" />
-    </div><br />
+    <div id="auth" class="shadow p-3 mb-5 bg-white rounded" style="position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);">
+        <div class="text-center">
+            <img class="mb-3" src="../images/overbeered.jpg" alt="" width="72" height="72">
+            <h1 class="mb-3">Web socket</h1>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">login</span>
+            </div>
+            <input id="userName" type="text" class="form-control" aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-default">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Пароль</span>
+            </div>
+            <input id="userPassword" type="text" class="form-control" aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-default">
+        </div>
+        <button id="loginBtn" type="button" class="btn btn-primary btn-lg btn-block mb-2" value="Войти">Войти</button>
 
-    <div id="header"></div><br />
-
-    <div id="inputForm">
-        <input type="text" id="message" />
-        <input type="button" id="sendBtn" disabled value="Отправить" />
+        <div class="text-center">
+            <a type="button" onclick="continueToRegistration()">Регистрация</a>
+        </div>
     </div>
-    <div id="chatroom"></div>
 
+    <div id="registration" class="shadow p-3 mb-5 bg-white rounded registration" style="position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);">
+        <form>
+            <div class="text-center">
+                <img class="mb-3" src="../images/overbeered.jpg" alt="" width="72" height="72">
+                <h1 class="mb-3">Web socket</h1>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">login</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Email</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Пароль</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Повторите</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default">
+            </div>
+            <button type="button" class="btn btn-primary btn-lg btn-block">Регистрация</button>
+        </form>
+        <div class="text-center">
+            <a type="button" onclick="continueToAuth()">Авторизация</a>
+        </div>
+    </div>
+    <div class="p-4 chat" id="chat">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex bd-highlight">
+                    <div class="p-2 bd-highlight">
+                        <a href="/"><button class="btn btn-primary">Выход</button></a>
+                    </div>
+                </div>
+            </div>
+
+          
+            <div class="card-body" style="height: 60vh;">
+                <div id="chat-window"></div>
+            </div>
+            <div class="card-footer text-muted">
+                <form>
+                    <div class="d-flex bd-highlight">
+                        <div class="p-2 flex-grow-1 bd-highlight">
+                            <input type="text" id="message" class="form-control" placeholder="Напишите текст...">
+                        </div>
+                        <div class="p-2 bd-highlight">
+                            <button type="button" id="sendBtn" class="btn btn-primary mb-2">Отправить всем</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script ENGINE="text/javascript" src="https://code.jquery.com/jquery-1.11.2.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="js/signalr/dist/browser/signalr.min.js"></script>
     <script>
+
+        function messageCountHandler() {
+            if (countChatMessages >= 11) {
+                let count = countChatMessages - 11;
+                $(`#message-${count}`).hide();
+            }
+        }
+
+        function continueToAuth() {
+            $('#chat').hide();
+            $('#registration').hide();
+            $('#auth').show();
+        }
+        function continueToRegistration() {
+            $('#chat').hide();
+            $('#registration').show();
+            $('#auth').hide();
+        }
+
+        let countChatMessages = 0;
         let token;      // токен
         let username;   // имя пользователя
         const hubConnection = new signalR.HubConnectionBuilder()
             .withUrl("/chat", { accessTokenFactory: () => token })
             .build();
 
-        hubConnection.on("Receive", function (message, userName) {
 
-            // создаем элемент <b> для имени пользователя
-            let userNameElem = document.createElement("b");
-            userNameElem.appendChild(document.createTextNode(userName + ": "));
 
-            // создает элемент <p> для сообщения пользователя
+        hubConnection.on('Notify', function (message) {
+            $('#chat').show();
+            $('#registration').hide();
+            $('#auth').hide();
+
+            let notifyElem = document.createElement("b");
+            notifyElem.appendChild(document.createTextNode(message));
+
             let elem = document.createElement("p");
-            elem.appendChild(userNameElem);
-            elem.appendChild(document.createTextNode(message));
+            elem.setAttribute("id", "message-" + countChatMessages++);
+            elem.appendChild(notifyElem);
+            var firstElem = document.getElementById("chat-window").firstChild;
+            document.getElementById("chat-window").insertBefore(elem, firstElem);
 
-            var firstElem = document.getElementById("chatroom").firstChild;
-            document.getElementById("chatroom").insertBefore(elem, firstElem);
+            // Считаем кол-во сообщений по глобальному счетчику countChatMessages
+            // И выводим только те сообщения, которые проходят условие
+            messageCountHandler();
         });
 
         // аутентификация
@@ -57,21 +179,42 @@
                     token = data.access_token;
                     username = data.username;
 
-                    document.getElementById("sendBtn").disabled = false;
 
                     hubConnection.start()       // начинаем соединение с хабом
                         .catch(err => {
                             console.error(err.toString());
                             document.getElementById("loginBtn").disabled = true;
-                            document.getElementById("sendBtn").disabled = true;
                         });
                 }
             });
+
             // отправляем запрос на аутентификацию
             request.send("username=" + document.getElementById("userName").value +
                 "&password=" + document.getElementById("userPassword").value);
         });
-        // отправка сообщения на сервер
+
+        hubConnection.on("Receive", function (message, userName) {
+
+            // создаем элемент <b> для имени пользователя
+            let userNameElem = document.createElement("b");
+            userNameElem.appendChild(document.createTextNode(userName + ": "));
+
+            // создает элемент <p> для сообщения пользователя
+            let elem = document.createElement("p");
+
+            elem.setAttribute("id", "message-" + countChatMessages++);
+
+            elem.appendChild(userNameElem);
+            elem.appendChild(document.createTextNode(message));
+
+            var firstElem = document.getElementById("chat-window").firstChild;
+            document.getElementById("chat-window").insertBefore(elem, firstElem);
+
+            // Считаем кол-во сообщений по глобальному счетчику countChatMessages
+            // И выводим только те сообщения, которые проходят условие
+            messageCountHandler();
+        });
+
         document.getElementById("sendBtn").addEventListener("click", function (e) {
             let message = document.getElementById("message").value;
             hubConnection.invoke("Send", message, username);
