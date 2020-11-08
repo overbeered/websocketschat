@@ -1,0 +1,17 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs
+
+  build
+
+    runs-on ubuntu-latest
+    steps
+    - uses actionscheckout@v1
+    - name Create containers
+      run docker-compose -f docker-compose.prod.yml build
+    - name Run containers
+      run docker-compose -f docker-compose.prod.yml up -d
