@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 LABEL author="Arthur Safiullin"
 
 WORKDIR /app
-EXPOSE 5000
+# EXPOSE 5000 # comment this out because I expose in docker-compose for consistancy
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src

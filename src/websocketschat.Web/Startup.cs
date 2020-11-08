@@ -42,8 +42,13 @@ namespace websocketschat.Web
 
             services.Configure<AuthOptions>(Configuration.GetSection("AuthOptions"));
 
+            // getting the connection string from docker-compose. 
+            // If they don't exist, use the appsetting.json file.
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? 
+                                   Configuration.GetConnectionString("DefaultConnection");
+
             services.AddDbContext<NpgSqlContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString(connectionString)));
 
             services.AddTransient<IUserRepository, UserRepository>();
 
@@ -85,6 +90,7 @@ namespace websocketschat.Web
                     };
                 });
 
+            services.AddCors();
             services.AddSignalR();
             services.AddControllers();
         }
@@ -102,6 +108,10 @@ namespace websocketschat.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors(builder => builder.AllowAnyOrigin()
+                                          .AllowAnyHeader()
+                                          .AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {
