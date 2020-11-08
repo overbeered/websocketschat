@@ -31,6 +31,8 @@ namespace websocketschat.Core.Services.Implementations
         /// </returns>
         public async Task<bool> AddUserAsync(CoreModels.User coreUser, string password)
         {
+            _logger.LogInformation($"Invoked UserService.AddUserAsync with data [{coreUser}]");
+
             bool userIsExists = await _userRepository
                 .UserExistsAsync(username: coreUser.Username);
 
@@ -72,6 +74,8 @@ namespace websocketschat.Core.Services.Implementations
         /// </returns>
         public async Task<bool> Authenticate(string username, string password)
         {
+            _logger.LogInformation($"Invoked UserService.Authenticate with data [Username: {username} Password: {password}]");
+
             bool userIsExists = await _userRepository
                 .UserExistsAsync(username: username);
 
@@ -115,6 +119,8 @@ namespace websocketschat.Core.Services.Implementations
         /// </returns>
         public async Task<CoreModels.User> GetUserAsync(string username)
         {
+            _logger.LogInformation($"Invoked UserService.AddUserAsync with data [Username: {username}]");
+
             bool userIsExists = await _userRepository
                .UserExistsAsync(username: username);
 

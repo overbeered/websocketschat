@@ -13,5 +13,10 @@ namespace websocketschat.Core.Models
 
         public int? RoleId { get; set; }
         public Role Role { get; set; }
+
+        public override string ToString()
+        {
+            return $"Username: {Username}\t";
+        }
     }
 }
