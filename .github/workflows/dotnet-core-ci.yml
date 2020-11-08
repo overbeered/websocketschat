@@ -13,6 +13,8 @@ jobs:
       run: ls -la
     - name: Go to project file
       run: cd src
+    - name: Check directory
+      run: ls -la
     - name: Build the docker-compose stack
       run: docker-compose -f docker-compose.prod.yml build
     - name: Run the docker-compose stack
