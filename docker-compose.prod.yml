@@ -14,7 +14,7 @@ services:
       context: ./src
       dockerfile: prod.Dockerfile
     ports: 
-      - "5000:5000"
+      - "80:80"
     environment:
       DB_CONNECTION_STRING: "host=postgres_dockerized;port=5432;database=websocketschat_db;username=postgres;password=postgres"
     networks:
