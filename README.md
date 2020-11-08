@@ -4,11 +4,11 @@
 ```
 git clone https://github.com/overbeered/websocketschat.git
 ```
-### then build docker container
+### then build docker containers
 ```
-docker build -f Dockerfile -t wsschat ..
+docker-compose -f docker-compose.prod.yml build
 ```
-### and then run this container
+### and then run these containers
 ```
-docker run -d -p 7777:80 wsschat:latest 
+docker-compose -f docker-compose.prod.yml up -d
 ```
