@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Check directory
+      run: ls -la
     - name: Build the docker-compose stack
       run: docker-compose -f docker-compose.prod.yml build
     - name: Run the docker-compose stack
