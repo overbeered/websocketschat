@@ -48,7 +48,7 @@ namespace websocketschat.Web
                                    Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<NpgSqlContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString(connectionString)));
+                options.UseNpgsql(connectionString));
 
             services.AddTransient<IUserRepository, UserRepository>();
 

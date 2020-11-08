@@ -23,6 +23,8 @@ namespace websocketschat.Web.Hubs
         }
         public async Task Send(string message, string userName)
         {
+            _logger.LogInformation("Invoked /Chat");
+
             string senderUserRole = Context.User.FindFirst(ClaimTypes.Role)?.Value;
 
             string finalMessage = await _messageHandler.HandleAsync(userName, message);
@@ -31,6 +33,7 @@ namespace websocketschat.Web.Hubs
         }
         public override async Task OnConnectedAsync()
         {
+            _logger.LogInformation("Invoked /Chat method OnConnectedAsync");
 #if DEBUG
             Console.WriteLine($"{Context.GetHttpContext().User.Identity.Name} вошел в чат");
 #endif
@@ -39,6 +42,7 @@ namespace websocketschat.Web.Hubs
         }
         public override async Task OnDisconnectedAsync(Exception exception)
         {
+            _logger.LogInformation("Invoked /Chat method OnDisconnectedAsync");
 #if DEBUG
             Console.WriteLine("Отключился " + Context.GetHttpContext().User.Identity.Name);
 #endif

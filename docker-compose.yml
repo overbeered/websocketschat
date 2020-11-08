@@ -1,23 +1,28 @@
 version: '3.7'
 
+networks:
+  dev-network:
+    driver: bridge
+
 services:
 
   postgres:
     container_name: 'postgres_dockerized'
-    image: postgres:10.8
+    image: postgres:10
     restart: always
     expose:
       - "5432"
     environment:
-      POSTGRES_USER: 'develop'
-      POSTGRES_PASSWORD: 'developass'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
       POSTGRES_DB: 'websocketschat_db'
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - 'aspnetcoreapp-network'
-  api:
+      - 'dev-network'
+
+  web:
     container_name: 'websocketschat_dockerized'
     build:
       context: ./src
@@ -26,15 +31,12 @@ services:
     ports: 
       - "5000:5000"
     environment:
-      DB_CONNECTION_STRING: 'Server=postgres;Port=5432;Database=websocketschat_db;User Id=pguser;Password=pguserpass'
+      ASPNETCORE_ENVIRONMENT: 'Production'
+      DB_CONNECTION_STRING: 'host=postgres;port=5432;database=websocketschat_db;username=postgres;password=postgres'
     depends_on:
       - 'postgres'
     networks:
-      - 'aspnetcoreapp-network'
+      - 'dev-network'
 
 volumes:
   pgdata:
-
-networks:
-  aspnetcoreapp-network:
-    driver: bridge

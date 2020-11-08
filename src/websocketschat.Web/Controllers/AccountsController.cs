@@ -44,12 +44,10 @@ namespace websocketschat.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> RegisterUser([FromForm] PostUserDto userDto)
         {
-            Console.WriteLine(userDto);
+            _logger.LogInformation("Invoked api/Accounts/register");
 
             CoreModels.User coreUser = _mapper.Map<CoreModels.User>(userDto);
             bool isCreated = await _userService.AddUserAsync(coreUser, userDto.Password);
-
-            Console.WriteLine(isCreated);
 
             if (isCreated)
                 return StatusCode(201);
@@ -62,9 +60,10 @@ namespace websocketschat.Web.Controllers
         [Route("token")]
         public async Task<IActionResult> Token([FromForm] PostUserDto userDto)
         {
-            ClaimsIdentity identity = await GetIdentity(userDto.Username, userDto.Password);
 
-            Console.WriteLine("Username: " + userDto.Username + " Password: " + userDto.Password);
+            _logger.LogInformation("Invoked api/Accounts/token");
+
+            ClaimsIdentity identity = await GetIdentity(userDto.Username, userDto.Password);
 
             if (identity == null)
             {
