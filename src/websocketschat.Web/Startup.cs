@@ -118,6 +118,11 @@ namespace websocketschat.Web
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chat");
             });
+
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                serviceScope.ServiceProvider.GetService<NpgSqlContext>().Database.Migrate();
+            }
         }
     }
 }
