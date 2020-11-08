@@ -29,18 +29,33 @@ namespace websocketschat.Web.Helpers.MessageHandler
         {
             // Команды
             // /commands
+            // В будущем хранить команды в бд и выводить список команд из бд.
+            if(commandLine.ToLower().Contains("commands"))
+            {
+                return "/change_name=newName - change nickname if new nickname is free to pick.\n" +
+                       "/send_to=username - sends private message to user if exists.\n" +
+                       "/commands - shows stored commands.";
+            }
 
             // Смена никнейма
             // /change_name=nickname
-            if (commandLine.Contains("change_name="))
+            if (commandLine.ToLower().Contains("change_name="))
+            {
+                string newNickname = commandLine.Substring(12);
+
+                var user = await _userService.GetUserAsync(userName);
+               
+                return $"User {userName} changed nickname to {newNickname}.";
+            }
+
+            // Приватное сообщение
+            // /send_to=username&message=text
+            if (commandLine.ToLower().StartsWith("send_to="))
             {
                 string newNickname = commandLine.Substring(12);
 
                 return $"User {userName} changed nickname to {newNickname}.";
             }
-
-            // Приватное сообщение
-            // /send_to_username=nickname&message=text
 
             return "command " + "/" +commandLine + " is unsupported.";
         }
