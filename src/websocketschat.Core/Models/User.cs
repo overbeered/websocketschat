@@ -16,7 +16,7 @@ namespace websocketschat.Core.Models
 
         public override string ToString()
         {
-            return $"Username: {Username}\t";
+            return $"CoreUserModel: Id: {Id}\tUsername: {Username}";
         }
     }
 }

@@ -107,7 +107,10 @@ namespace websocketschat.Web.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, coreUser.Username),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, coreUser.Role.Name)
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, coreUser.Role.Name),
+
+                    // Id
+                    new Claim("Guid", coreUser.Id.ToString())
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

@@ -14,15 +14,17 @@ namespace websocketschat.Web.Helpers.MessageHandler
             _userService = userService;
         }
 
-        public async Task<string> HandleAsync(string userName, string userMessage)
+        public async Task<Tuple<bool,string>> HandleAsync(string userName, string userMessage)
         {
+            Tuple<bool, string> answerToFront = new Tuple<bool, string>(false, userMessage);
             
             if(userMessage.StartsWith("/"))
             {
-               return await CommandExecutorAsync(userName, userMessage.Remove(0, 1));
+               string finallMessage =  await CommandExecutorAsync(userName, userMessage.Remove(0, 1));
+               answerToFront = new Tuple<bool, string>(true, finallMessage);
             }
 
-            return userMessage;
+            return answerToFront;
         }
 
         private async Task<string> CommandExecutorAsync(string userName, string commandLine)
@@ -43,9 +45,25 @@ namespace websocketschat.Web.Helpers.MessageHandler
             {
                 string newNickname = commandLine.Substring(12);
 
-                var user = await _userService.GetUserAsync(userName);
+                if(newNickname == string.Empty || newNickname == null)
+                {
+                    return $"User {userName} tried to change username to \'{newNickname}\' with failure.";
+                }
+
+                var userWithSameUsername = await _userService.GetUserAsync(newNickname);
+
+                if(userWithSameUsername == null)
+                {
+                    var user = await _userService.GetUserAsync(userName);
+
+                    user.Username = newNickname;
+
+                    var updatedUser = await _userService.UpdateUserAsync(user);
+
+                    return $"User {userName} changed nickname to {updatedUser.Username}.";
+                }
                
-                return $"User {userName} changed nickname to {newNickname}.";
+                return $"User {userName} tried to change nickname to {newNickname} but user with this nickname already exist.";
             }
 
             // Приватное сообщение

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using websocketschat.Core.Models;
 using websocketschat.Core.Repositories;
 using websocketschat.Core.Services.Interfaces;
 using CoreModels = websocketschat.Core.Models;
@@ -187,6 +188,48 @@ namespace websocketschat.Core.Services.Implementations
                 passwordHashingKey = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
+        }
+
+        /// <summary>
+        /// Updates user model.
+        /// </summary>
+        /// <param name="user">User to update.</param>
+        /// <returns>
+        /// user - if update was made with success.
+        /// null - if not.
+        /// </returns>
+        public async Task<User> UpdateUserAsync(User user)
+        {
+            _logger.LogInformation($"Invoked UserService.UpdateUserAsync with data [Username: {user.Username}]");
+
+            if(!await _userRepository.UserExistsAsync(user.Username))
+            {
+                return await _userRepository.UpdateUserAsync(user);
+            }
+
+            return null;
+        }
+
+        public async Task<User> GetUserByIdAsync(Guid guid)
+        {
+            _logger.LogInformation($"Invoked UserService.GetUserByIdAsync with data [Id: {guid}]");
+
+            bool userIsExists = await _userRepository
+               .UserExistsByIdAsync(guid: guid);
+
+            if (userIsExists)
+            {
+                try
+                {
+                    return await _userRepository.GetUserWithRoleByIdAsync(guid);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogInformation(ex.Message);
+                }
+            }
+
+            return null;
         }
     }
 }

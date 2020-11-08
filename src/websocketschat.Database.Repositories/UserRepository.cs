@@ -50,7 +50,17 @@ namespace websocketschat.Database.Repositories
         public async Task<User> GetUserAsync(string username)
         {
             DbModels.User storedUser = await _dbContext.Users
+                .AsNoTracking()
                 .FirstAsync(user => user.Username == username);
+
+            return _mapper.Map<CoreModels.User>(storedUser);
+        }
+
+        public async Task<User> GetUserByIdAsync(Guid guid)
+        {
+            DbModels.User storedUser = await _dbContext.Users
+                .AsNoTracking()
+                .FirstAsync(user => user.Id == guid);
 
             return _mapper.Map<CoreModels.User>(storedUser);
         }
@@ -59,14 +69,40 @@ namespace websocketschat.Database.Repositories
         {
             DbModels.User storedUser = await _dbContext.Users
                 .Include(user => user.Role)
+                .AsNoTracking()
                 .FirstAsync(user => user.Username == username);
 
             return _mapper.Map<CoreModels.User>(storedUser);
         }
 
+        public async Task<User> GetUserWithRoleByIdAsync(Guid guid)
+        {
+            DbModels.User storedUser = await _dbContext.Users
+                .Include(user => user.Role)
+                .AsNoTracking()
+                .FirstAsync(user => user.Id == guid);
+
+            return _mapper.Map<CoreModels.User>(storedUser);
+        }
+
+        public async Task<User> UpdateUserAsync(User user)
+        {
+            DbModels.User updatedUser = _mapper.Map<DbModels.User>(user);
+
+            _dbContext.Users.Update(updatedUser);
+            await _dbContext.SaveChangesAsync();
+
+            return _mapper.Map<CoreModels.User>(updatedUser);
+        }
+
         public async Task<bool> UserExistsAsync(string username)
         {
             return await _dbContext.Users.AnyAsync(user => user.Username == username);
+        }
+
+        public async Task<bool> UserExistsByIdAsync(Guid guid)
+        {
+            return await _dbContext.Users.AnyAsync(user => user.Id == guid);
         }
     }
 }
