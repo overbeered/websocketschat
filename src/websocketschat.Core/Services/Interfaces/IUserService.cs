@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using CoreModels = websocketschat.Core.Models;
+
+namespace websocketschat.Core.Services.Interfaces
+{
+    /// <summary>
+    /// Defines User service interface.
+    /// </summary>
+    public interface IUserService
+    {
+        #region CRUD Async methods
+        Task<bool> AddUserAsync(CoreModels.User coreUser, string password);
+        Task<IEnumerable<CoreModels.User>> GetAllUsersAsync();
+        Task<IEnumerable<CoreModels.User>> GetAllUsersWithRoleAsync();
+        Task<CoreModels.User> GetUserAsync(string username);
+        #endregion
+
+        #region Auth methods
+        Task<bool> Authenticate(string username, string password);
+        #endregion
+    }
+}
