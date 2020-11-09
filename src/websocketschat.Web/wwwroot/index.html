@@ -98,7 +98,7 @@
                             <input type="text" id="message" class="form-control" placeholder="Напишите текст...">
                         </div>
                         <div class="p-2 bd-highlight">
-                            <button type="button" id="sendBtn" class="btn btn-primary mb-2">Send</button>
+                            <button type="button" id="sendBtn" class="btn btn-primary mb-2" autofocus>Send</button>
                         </div>
                     </div>
                 </form>
@@ -136,6 +136,13 @@
         const hubConnection = new signalR.HubConnectionBuilder()
             .withUrl("/chat", { accessTokenFactory: () => token })
             .build();
+
+        // enter button
+        //$(document).keypress(function (e) {
+        //    if (e.which == 13) {
+        //        document.getElementById("sendBtn").click();
+        //    }
+        //});
 
 
         hubConnection.on('Notify', function (message) {
@@ -242,7 +249,11 @@
         });
 
         document.getElementById("sendBtn").addEventListener("click", function (e) {
-            let message = document.getElementById("message").value;
+            let elem = document.getElementById("message");
+            let message = elem.value;
+
+            elem.value = "";
+
             hubConnection.invoke("Send", message, username);
         });
     </script>
