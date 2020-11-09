@@ -97,7 +97,7 @@ namespace websocketschat.Web.Controllers
         private async Task<ClaimsIdentity> GetIdentity(string username, string password)
         {
             // check for existing in database.
-            CoreModels.User coreUser = await _userService.GetUserAsync(username);
+            CoreModels.User coreUser = await _userService.GetUserWithRoleByUsernameAsync(username);
 
             // check for stored password in database.
             bool isAuthenticated = await _userService.Authenticate(username, password);

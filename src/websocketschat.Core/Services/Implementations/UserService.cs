@@ -125,9 +125,9 @@ namespace websocketschat.Core.Services.Implementations
         /// CoreModels.User - if user is found in data storage.
         /// null - if user is not stored.
         /// </returns>
-        public async Task<CoreModels.User> GetUserAsync(string username)
+        public async Task<CoreModels.User> GetUserByUsernameAsync(string username)
         {
-            _logger.LogInformation($"Invoked UserService.AddUserAsync with data [Username: {username}]");
+            _logger.LogInformation($"Invoked UserService.GetUserAsync with data [Username: {username}]");
 
             bool userIsExists = await _userRepository
                .UserExistsAsync(username: username);
@@ -136,7 +136,7 @@ namespace websocketschat.Core.Services.Implementations
             {
                 try
                 {
-                    return await _userRepository.GetUserWithRoleAsync(username);
+                    return await _userRepository.GetUserAsync(username);
                 }
                 catch (Exception ex)
                 {
@@ -209,7 +209,7 @@ namespace websocketschat.Core.Services.Implementations
         {
             _logger.LogInformation($"Invoked UserService.UpdateUserAsync with data [Username: {user.Username}]");
 
-            if(!await _userRepository.UserExistsAsync(user.Username))
+            if(await _userRepository.UserExistsByIdAsync(user.Id))
             {
                 return await _userRepository.UpdateUserAsync(user);
             }
@@ -218,6 +218,50 @@ namespace websocketschat.Core.Services.Implementations
         }
 
         public async Task<User> GetUserByIdAsync(Guid guid)
+        {
+            _logger.LogInformation($"Invoked UserService.GetUserByIdAsync with data [Id: {guid}]");
+
+            bool userIsExists = await _userRepository
+               .UserExistsByIdAsync(guid: guid);
+
+            if (userIsExists)
+            {
+                try
+                {
+                    return await _userRepository.GetUserByIdAsync(guid);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogInformation(ex.Message);
+                }
+            }
+
+            return null;
+        }
+
+        public async Task<User> GetUserWithRoleByUsernameAsync(string username)
+        {
+            _logger.LogInformation($"Invoked UserService.GetUserWithRoleAsync with data [Username: {username}]");
+
+            bool userIsExists = await _userRepository
+               .UserExistsAsync(username: username);
+
+            if (userIsExists)
+            {
+                try
+                {
+                    return await _userRepository.GetUserWithRoleAsync(username);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogInformation(ex.Message);
+                }
+            }
+
+            return null;
+        }
+
+        public async Task<User> GetUserWithRoleByIdAsync(Guid guid)
         {
             _logger.LogInformation($"Invoked UserService.GetUserByIdAsync with data [Id: {guid}]");
 
