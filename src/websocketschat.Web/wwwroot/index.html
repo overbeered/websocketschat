@@ -138,7 +138,6 @@
             .build();
 
 
-
         hubConnection.on('Notify', function (message) {
             $('#chat').show();
             $('#registration').hide();
@@ -217,11 +216,14 @@
         });
 
 
-        hubConnection.on("Receive", function (message, userName) {
+        hubConnection.on("Receive", function (message, senderNickname) {
+
+            // обновляем имя если сработала нужная команда.
+            username = senderNickname;
 
             // создаем элемент <b> для имени пользователя
             let userNameElem = document.createElement("b");
-            userNameElem.appendChild(document.createTextNode(userName + ": "));
+            userNameElem.appendChild(document.createTextNode(senderNickname + ": "));
 
             // создает элемент <p> для сообщения пользователя
             let elem = document.createElement("p");

@@ -13,9 +13,13 @@ namespace websocketschat.Core.Repositories
     {
         Task AddUserAsync(User coreUser);
         Task<User> GetUserAsync(string username);
+        Task<User> GetUserByIdAsync(Guid guid);
         Task<User> GetUserWithRoleAsync(string username);
+        Task<User> GetUserWithRoleByIdAsync(Guid guid);
         Task<bool> UserExistsAsync(string username);
+        Task<bool> UserExistsByIdAsync(Guid guid);
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<IEnumerable<User>> GetAllUsersWithRolesAsync();
+        Task<User> UpdateUserAsync(User user);
     }
 }
