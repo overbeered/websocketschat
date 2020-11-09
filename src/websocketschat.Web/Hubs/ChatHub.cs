@@ -24,8 +24,6 @@ namespace websocketschat.Web.Hubs
         }
         public async Task Send(string username, string text)
         {
-            Console.WriteLine("Username: " + username);
-
             Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
             User connectedUser = await _userService.GetUserByIdAsync(userId);
 

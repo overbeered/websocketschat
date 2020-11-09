@@ -95,7 +95,7 @@
                 <form>
                     <div class="d-flex bd-highlight">
                         <div class="p-2 flex-grow-1 bd-highlight">
-                            <input type="text" id="message" class="form-control" placeholder="Напишите текст...">
+                            <input type="text" id="message" class="form-control" placeholder="Write message...">
                         </div>
                         <div class="p-2 bd-highlight">
                             <button type="button" id="sendBtn" class="btn btn-primary mb-2" autofocus>Send</button>
@@ -243,11 +243,11 @@
             request.addEventListener("load", function () {
 
                 if (request.status == 201) {
-                    alert("Регистрация прошла успешно");
+                    alert("Registration was successful.");
                     continueToAuth();
                 }
                 else {
-                    alert("Вы не прошли регистрацию");
+                    alert("Username or password is invalid");
                 }
             });
 
@@ -256,7 +256,7 @@
                 request.send("username=" + document.getElementById("userNameRegistration").value +
                     "&password=" + document.getElementById("userPasswordRegistration").value);
             } else {
-                alert("Пароли разные");
+                alert("Passwords don't match.");
             }
 
         });
