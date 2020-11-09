@@ -56,7 +56,7 @@ namespace websocketschat.Web.Hubs
                     if (newNickname == string.Empty || newNickname == null)
                     {
                         responseMessage = $"You tried to change your username to \'{newNickname}\' with failure.";
-                        await Clients.User(connectedUser.Username).SendAsync("Notify", "Bot: -->" + responseMessage);
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + responseMessage);
                         return;
                     }
                     else
@@ -71,13 +71,13 @@ namespace websocketschat.Web.Hubs
 
                             User updatedUser = await _userService.UpdateUserAsync(user);
 
-                            responseMessage = $"User {userName} changed nickname to {updatedUser.Username}.";
+                            responseMessage = $"User \'{userName}\' changed nickname to \'{updatedUser.Username}\'.";
                             await Clients.All.SendAsync("Notify", "Bot: " + responseMessage);
                         }
                         else
                         {
-                            responseMessage = $"You tried to change nickname to {newNickname} but user with this nickname is belong to other user.";
-                            await Clients.User(connectedUser.Username).SendAsync("Notify", "Bot: -->" + responseMessage);
+                            responseMessage = $"You tried to change nickname to \'{newNickname}\' but user with this nickname is belong to other user.";
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + responseMessage);
                             return;
                         }
                     }
@@ -92,17 +92,28 @@ namespace websocketschat.Web.Hubs
 
                     User userMessageGetter = await _userService.GetUserAsync(to);
 
+                    if(userMessageGetter == null)
+                    {
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", $"Bot: --> User with username \'{to}\'" +
+                            $"does not exist.");
+                        return;
+                    }
+
                     // if sender is a getter too.
                     if (userMessageGetter != connectedUser)
                     {
-                        await Clients.User(connectedUser.Username).SendAsync("Notify", $"Bot: -->\'{message}\' was sent to {userMessageGetter.Username} successfully.");
-                        await Clients.User(userMessageGetter.Username).SendAsync("Receive", "-->" + message, userName);
+                        // write to sender what his message was sent to recevier.
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", $"Bot: -->\'{message}\' was sent to {userMessageGetter.Username} successfully.");
+
+                        // print message on receiver screen.
+                        await Clients.User(userMessageGetter.Id.ToString()).SendAsync("Receive", "-->" + message, connectedUser.Username);
+                      //  await Clients.User(userMessageGetter.Id.ToString()).SendAsync("Receive", "-->" + message, connectedUser.Username, userMessageGetter.Username);
                         return;
                     }
                     else
                     {
                         responseMessage = $"You tried to send message to yourself.";
-                        await Clients.User(connectedUser.Username).SendAsync("Notify", "Bot: -->" + responseMessage);
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + responseMessage);
                         return;
                     }
                 }
@@ -110,8 +121,8 @@ namespace websocketschat.Web.Hubs
                 // Not a command
                 else
                 {
-                    responseMessage = "Your typed command " + "/" + text + " is unsupported.";
-                    await Clients.User(connectedUser.Username).SendAsync("Notify", "Bot: -->" + responseMessage);
+                    responseMessage = "Your typed command " + "\'/" + text + "\' is unsupported.";
+                    await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + responseMessage);
                     return;
                 }
             }
