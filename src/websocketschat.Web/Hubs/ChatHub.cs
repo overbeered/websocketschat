@@ -28,6 +28,12 @@ namespace websocketschat.Web.Hubs
 
             string responseMessage = text;
 
+            if(text == string.Empty || text == null)
+            {
+                await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + "message can't be null or empty.");
+                return;
+            }
+
             #region HandleMessageStuff
             // starts with '/'  -  if text is command.
             // else -  if text is message.
