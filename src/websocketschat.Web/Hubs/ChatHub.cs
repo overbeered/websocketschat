@@ -88,11 +88,11 @@ namespace websocketschat.Web.Hubs
                     }
                     else
                     {
-                        User userWithSameUsername = await _userService.GetUserAsync(newNickname);
+                        User userWithSameUsername = await _userService.GetUserByUsernameAsync(newNickname);
 
                         if (userWithSameUsername == null)
                         {
-                            User user = await _userService.GetUserAsync(username);
+                            User user = await _userService.GetUserByUsernameAsync(username);
 
                             user.Username = newNickname;
 
@@ -131,7 +131,7 @@ namespace websocketschat.Web.Hubs
                     string to = text.Split(new char[] { '&' })[0].Substring(8);
                     string message = text.Split(new char[] { '&' })[1].Substring(8);
 
-                    User userMessageGetter = await _userService.GetUserAsync(to);
+                    User userMessageGetter = await _userService.GetUserByUsernameAsync(to);
 
                     if (userMessageGetter == null)
                     {
@@ -163,7 +163,7 @@ namespace websocketschat.Web.Hubs
                         }
 
                         // write to sender what his message was sent to recevier.
-                        responseMessage = $"\'{message}\' was sent to {userMessageGetter.Username} successfully.";
+                        responseMessage = $"Message \'{message}\' was sent to {userMessageGetter.Username} successfully.";
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
@@ -196,10 +196,149 @@ namespace websocketschat.Web.Hubs
                     }
                 }
 
-                // Not a command
+                // Give admin rights to user.
+                // /make_admin=username
+                else if (text.ToLower().StartsWith("make_admin="))
+                {
+                    if (connectedUser.RoleId != 1)
+                    {
+                        responseMessage = $"You role is \'User\', this command is not allowed to you.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
+                    }
+
+                    // 11 symbols
+                    string newAdminNickname = text.Substring(11);
+                    
+                    if(newAdminNickname != string.Empty && newAdminNickname != null)
+                    {
+                        User newAdmin = await _userService.GetUserByUsernameAsync(newAdminNickname);
+
+                        if(newAdmin != null)
+                        {
+                            newAdmin.RoleId = 1;
+                            User updatedUser = await _userService.UpdateUserAsync(newAdmin);
+
+                            responseMessage = $"User \'{updatedUser.Username}\' is granted admin rights.";
+
+                            // write to sender what his message was sent to recevier.
+                            await Clients.All.SendAsync("Notify", responseMessage);
+                            return;
+                        }
+                        else
+                        {
+                            responseMessage = $"User with username \'{newAdminNickname}\' does not exist.";
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "-->" + responseMessage,
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        responseMessage = "Username can't be null or empty.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
+                    }
+                }
+
+                // Give admin rights back.
+                // /remove_admin=username
+                else if (text.ToLower().StartsWith("remove_admin="))
+                {
+                    // 13 symbols
+                    if (connectedUser.RoleId != 1)
+                    {
+                        responseMessage = $"You role is \'User\', this command is not allowed to you.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
+                    }
+
+                    string candidateToLoseAdminRoleNickname = text.Substring(13);
+
+                    if (candidateToLoseAdminRoleNickname != string.Empty && candidateToLoseAdminRoleNickname != null)
+                    {
+                        User newAdmin = await _userService.GetUserByUsernameAsync(candidateToLoseAdminRoleNickname);
+
+                        if(newAdmin.Username == "root")
+                        {
+                            responseMessage = $"Nobody can't remove admin rights from \'{newAdmin.Username}\'.";
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "-->" + responseMessage,
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+
+                            return;
+                        }
+
+                        if (newAdmin != null)
+                        {
+                            newAdmin.RoleId = 2;
+                            User updatedUser = await _userService.UpdateUserAsync(newAdmin);
+
+                            responseMessage = $"User \'{updatedUser.Username}\' lost admin rights.";
+
+                            // write to sender what his message was sent to recevier.
+                            await Clients.All.SendAsync("Notify", responseMessage);
+                            return;
+                        }
+                        else
+                        {
+                            responseMessage = $"User with username \'{candidateToLoseAdminRoleNickname}\' does not exist.";
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "-->" + responseMessage,
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        responseMessage = "Username can't be null or empty.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
+                    }
+                }
+
+                // Command was not found.
+                // /dsfdsf
                 else
                 {
-                    responseMessage = "Your typed command " + "\'/" + text + "\' is unsupported.";
+                    responseMessage = "Command " + "\'/" + text + "\' is unsupported.";
                     await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                     {
                         message = "-->" + responseMessage,
@@ -210,6 +349,7 @@ namespace websocketschat.Web.Hubs
                     return;
                 }
             }
+            // Simple message.
             else
             {
                 await Clients.All.SendAsync("Receive", new
@@ -225,7 +365,8 @@ namespace websocketschat.Web.Hubs
         #region Connect/Disconnect stuff
         public override async Task OnConnectedAsync()
         {
-            User connectedUser = await _userService.GetUserAsync(Context.GetHttpContext().User.Identity.Name);
+             Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
+            User connectedUser = await _userService.GetUserByIdAsync(userId);
 
             await Clients.All.SendAsync("Notify", $"{connectedUser.Username} joined the chat.");
             await base.OnConnectedAsync();

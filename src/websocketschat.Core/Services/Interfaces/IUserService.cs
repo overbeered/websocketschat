@@ -15,8 +15,10 @@ namespace websocketschat.Core.Services.Interfaces
         Task<bool> AddUserAsync(CoreModels.User coreUser, string password);
         Task<IEnumerable<CoreModels.User>> GetAllUsersAsync();
         Task<IEnumerable<CoreModels.User>> GetAllUsersWithRoleAsync();
-        Task<CoreModels.User> GetUserAsync(string username);
+        Task<CoreModels.User> GetUserByUsernameAsync(string username);
+        Task<CoreModels.User> GetUserWithRoleByUsernameAsync(string username);
         Task<CoreModels.User> GetUserByIdAsync(Guid guid);
+        Task<CoreModels.User> GetUserWithRoleByIdAsync(Guid guid);
         Task<CoreModels.User> UpdateUserAsync(CoreModels.User user);
         #endregion
 
