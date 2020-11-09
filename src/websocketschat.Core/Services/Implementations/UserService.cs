@@ -44,7 +44,14 @@ namespace websocketschat.Core.Services.Implementations
                 CreatePasswordHash(password, out passwordHash, out passwordHashingKey);
 
                 // Set "User" type for new created user.
-                coreUser.RoleId = 2;
+                if (coreUser.Username == "Admin" || coreUser.Username == "root")
+                {
+                    coreUser.RoleId = 1;
+                }
+                else
+                {
+                    coreUser.RoleId = 2;
+                }
 
                 coreUser.PasswordHash = passwordHash;
                 coreUser.PasswordHashingKey = passwordHashingKey;
