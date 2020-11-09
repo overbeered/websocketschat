@@ -45,33 +45,33 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);">
-            <div class="text-center">
-                <img class="mb-3" src="../images/overbeered.jpg" alt="" width="72" height="72">
-                <h1 class="mb-3">overbeered</h1>
+        <div class="text-center">
+            <img class="mb-3" src="../images/overbeered.jpg" alt="" width="72" height="72">
+            <h1 class="mb-3">overbeered</h1>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
             </div>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
-                </div>
-                <input type="text" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="inputGroup-sizing-default" id="userNameRegistration">
+            <input type="text" class="form-control" aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-default" id="userNameRegistration">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Password</span>
             </div>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Password</span>
-                </div>
-                <input type="text" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="inputGroup-sizing-default" id="userPasswordRegistration">
+            <input type="text" class="form-control" aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-default" id="userPasswordRegistration">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Repeate password</span>
             </div>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Repeate password</span>
-                </div>
-                <input type="text" class="form-control" aria-label="Sizing example input"
-                       aria-describedby="inputGroup-sizing-default" id="userPasswordCopyRegistration">
-            </div>
-            <button type="button" id="registerBtn" class="btn btn-primary btn-lg btn-block">Registration</button>
-       
+            <input type="text" class="form-control" aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-default" id="userPasswordCopyRegistration">
+        </div>
+        <button type="button" id="registerBtn" class="btn btn-primary btn-lg btn-block">Registration</button>
+
         <div class="text-center">
             <a type="button" onclick="continueToAuth()">Authorization</a>
         </div>
@@ -87,7 +87,7 @@
                 </div>
             </div>
 
-          
+
             <div class="card-body" style="height: 60vh;">
                 <div id="chat-window"></div>
             </div>
@@ -137,13 +137,6 @@
             .withUrl("/chat", { accessTokenFactory: () => token })
             .build();
 
-        // enter button
-        //$(document).keypress(function (e) {
-        //    if (e.which == 13) {
-        //        document.getElementById("sendBtn").click();
-        //    }
-        //});
-
 
         hubConnection.on('Notify', function (message) {
             $('#chat').show();
@@ -156,6 +149,43 @@
             let elem = document.createElement("p");
             elem.setAttribute("id", "message-" + countChatMessages++);
             elem.appendChild(notifyElem);
+            var firstElem = document.getElementById("chat-window").firstChild;
+            document.getElementById("chat-window").insertBefore(elem, firstElem);
+
+            // Считаем кол-во сообщений по глобальному счетчику countChatMessages
+            // И выводим только те сообщения, которые проходят условие
+            messageCountHandler();
+        });
+
+        hubConnection.on("Receive", function (data) {
+
+            // обновляем, если сообщение было приватное. (Private)
+            // оставляем прежним, если сообщение было всем. (Broadcast)
+            if (data.getter_username || !(/^\s*$/.test(data.getter_username))) {
+                username = data.getter_username;
+            }
+
+            // создаем элемент <b> для имени пользователя
+            let userNameElem = document.createElement("b");
+
+            if (data.roleid == 1) {
+                userNameElem.style.color = "red";
+            } else if (data.roleid == 2) {
+                userNameElem.style.color = "blue";
+            } else {
+                userNameElem.style.color = "green";
+            }
+
+            userNameElem.appendChild(document.createTextNode(data.sender_username + ": "));
+
+            // создает элемент <p> для сообщения пользователя
+            let elem = document.createElement("p");
+
+            elem.setAttribute("id", "message-" + countChatMessages++);
+
+            elem.appendChild(userNameElem);
+            elem.appendChild(document.createTextNode(data.message));
+
             var firstElem = document.getElementById("chat-window").firstChild;
             document.getElementById("chat-window").insertBefore(elem, firstElem);
 
@@ -183,7 +213,7 @@
                     hubConnection.start()       // начинаем соединение с хабом
                         .catch(err => {
                             console.error(err.toString());
-                          //  document.getElementById("loginBtn").disabled = true;
+                            //  document.getElementById("loginBtn").disabled = true;
                         });
                 }
             });
@@ -191,6 +221,15 @@
             // отправляем запрос на аутентификацию
             request.send("username=" + document.getElementById("userName").value +
                 "&password=" + document.getElementById("userPassword").value);
+        });
+
+        document.getElementById("sendBtn").addEventListener("click", function (e) {
+            let elem = document.getElementById("message");
+            let message = elem.value;
+
+            elem.value = "";
+
+            hubConnection.invoke("Send", username, message);
         });
 
         // регистрация
@@ -222,40 +261,6 @@
 
         });
 
-
-        hubConnection.on("Receive", function (message, senderNickname) {
-
-            // обновляем имя если сработала нужная команда.
-            username = senderNickname;
-
-            // создаем элемент <b> для имени пользователя
-            let userNameElem = document.createElement("b");
-            userNameElem.appendChild(document.createTextNode(senderNickname + ": "));
-
-            // создает элемент <p> для сообщения пользователя
-            let elem = document.createElement("p");
-
-            elem.setAttribute("id", "message-" + countChatMessages++);
-
-            elem.appendChild(userNameElem);
-            elem.appendChild(document.createTextNode(message));
-
-            var firstElem = document.getElementById("chat-window").firstChild;
-            document.getElementById("chat-window").insertBefore(elem, firstElem);
-
-            // Считаем кол-во сообщений по глобальному счетчику countChatMessages
-            // И выводим только те сообщения, которые проходят условие
-            messageCountHandler();
-        });
-
-        document.getElementById("sendBtn").addEventListener("click", function (e) {
-            let elem = document.getElementById("message");
-            let message = elem.value;
-
-            elem.value = "";
-
-            hubConnection.invoke("Send", message, username);
-        });
     </script>
 </body>
 </html>

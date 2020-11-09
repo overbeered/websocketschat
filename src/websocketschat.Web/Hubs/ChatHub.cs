@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,20 +22,27 @@ namespace websocketschat.Web.Hubs
             _logger = logger;
             _userService = userService;
         }
-        public async Task Send(string text, string userName)
+        public async Task Send(string username, string text)
         {
+            Console.WriteLine("Username: " + username);
+
             Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
             User connectedUser = await _userService.GetUserByIdAsync(userId);
 
             string responseMessage = text;
 
-            if(text == string.Empty || text == null)
+            if (responseMessage == string.Empty || responseMessage == null)
             {
-                await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + "message can't be null or empty.");
+                await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                {
+                    message = "--> Message can't be null or empty.",
+                    sender_username = "Bot",
+                    getter_username = connectedUser.Username,
+                    roleid = 3
+                });
                 return;
             }
 
-            #region HandleMessageStuff
             // starts with '/'  -  if text is command.
             // else -  if text is message.
             if (text.StartsWith("/"))
@@ -49,7 +57,13 @@ namespace websocketschat.Web.Hubs
                                       "/send_to=username&message=text - sends private message (text param) to user (username param) if exists.\n" +
                                       "/commands - shows stored commands.";
 
-                    await Clients.All.SendAsync("Notify", "Bot: " + responseMessage);
+                    await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                    {
+                        message = "-->" + responseMessage,
+                        sender_username = "Bot",
+                        getter_username = connectedUser.Username,
+                        roleid = 3
+                    });
                     return;
                 }
 
@@ -62,7 +76,14 @@ namespace websocketschat.Web.Hubs
                     if (newNickname == string.Empty || newNickname == null)
                     {
                         responseMessage = $"You tried to change your username to \'{newNickname}\' with failure.";
-                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + responseMessage);
+
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
                         return;
                     }
                     else
@@ -71,19 +92,33 @@ namespace websocketschat.Web.Hubs
 
                         if (userWithSameUsername == null)
                         {
-                            User user = await _userService.GetUserAsync(userName);
+                            User user = await _userService.GetUserAsync(username);
 
                             user.Username = newNickname;
 
                             User updatedUser = await _userService.UpdateUserAsync(user);
 
-                            responseMessage = $"User \'{userName}\' changed nickname to \'{updatedUser.Username}\'.";
-                            await Clients.All.SendAsync("Notify", "Bot: " + responseMessage);
+                            responseMessage = $"User \'{username}\' changed nickname to \'{updatedUser.Username}\'.";
+
+                            await Clients.All.SendAsync("Receive", new
+                            {
+                                message = responseMessage,
+                                sender_username = updatedUser.Username,
+                                getter_username = "",
+                                roleid = updatedUser.RoleId
+                            });
+                            return;
                         }
                         else
                         {
                             responseMessage = $"You tried to change nickname to \'{newNickname}\' but user with this nickname is belong to other user.";
-                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + responseMessage);
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "-->" + responseMessage,
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
                             return;
                         }
                     }
@@ -98,10 +133,28 @@ namespace websocketschat.Web.Hubs
 
                     User userMessageGetter = await _userService.GetUserAsync(to);
 
-                    if(userMessageGetter == null)
+                    if (userMessageGetter == null)
                     {
-                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", $"Bot: --> User with username \'{to}\'" +
-                            $"does not exist.");
+                        if (message == string.Empty || message == null)
+                        {
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "--> Message can't be null or empty.",
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+                            return;
+                        }
+
+                        responseMessage = "User with username \'{to}\' does not exist.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
                         return;
                     }
 
@@ -109,17 +162,35 @@ namespace websocketschat.Web.Hubs
                     if (userMessageGetter != connectedUser)
                     {
                         // write to sender what his message was sent to recevier.
-                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", $"Bot: -->\'{message}\' was sent to {userMessageGetter.Username} successfully.");
+                        responseMessage = $"\'{message}\' was sent to {userMessageGetter.Username} successfully.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
 
                         // print message on receiver screen.
-                        await Clients.User(userMessageGetter.Id.ToString()).SendAsync("Receive", "-->" + message, connectedUser.Username);
-                      //  await Clients.User(userMessageGetter.Id.ToString()).SendAsync("Receive", "-->" + message, connectedUser.Username, userMessageGetter.Username);
+                        await Clients.User(userMessageGetter.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + message,
+                            sender_username = connectedUser.Username,
+                            getter_username = userMessageGetter.Username,
+                            roleid = connectedUser.RoleId
+                        });
                         return;
                     }
                     else
                     {
                         responseMessage = $"You tried to send message to yourself.";
-                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + responseMessage);
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
                         return;
                     }
                 }
@@ -128,17 +199,29 @@ namespace websocketschat.Web.Hubs
                 else
                 {
                     responseMessage = "Your typed command " + "\'/" + text + "\' is unsupported.";
-                    await Clients.User(connectedUser.Id.ToString()).SendAsync("Notify", "Bot: -->" + responseMessage);
+                    await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                    {
+                        message = "-->" + responseMessage,
+                        sender_username = "Bot",
+                        getter_username = connectedUser.Username,
+                        roleid = 3
+                    });
                     return;
                 }
             }
             else
             {
-                await Clients.All.SendAsync("Receive", text, connectedUser.Username);
-                return;
+                await Clients.All.SendAsync("Receive", new
+                {
+                    message = text,
+                    sender_username = connectedUser.Username,
+                    getter_username = "",
+                    roleid = connectedUser.RoleId
+                });
             }
-            #endregion
         }
+
+        #region Connect/Disconnect stuff
         public override async Task OnConnectedAsync()
         {
             User connectedUser = await _userService.GetUserAsync(Context.GetHttpContext().User.Identity.Name);
@@ -154,5 +237,6 @@ namespace websocketschat.Web.Hubs
             await Clients.All.SendAsync("Notify", $"{connectedUser.Username} left the chat.");
             await base.OnDisconnectedAsync(exception);
         }
+        #endregion
     }
 }
