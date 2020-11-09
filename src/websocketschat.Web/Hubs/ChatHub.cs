@@ -34,10 +34,9 @@ namespace websocketschat.Web.Hubs
             if (text.StartsWith("/"))
             {
                 text = text.Remove(0, 1);
-                // Команды.
 
+                // Chat commands.
                 // /commands
-                // В будущем хранить команды в бд и выводить список команд из бд.
                 if (text.ToLower().Contains("commands"))
                 {
                     responseMessage = "/change_name=newName - change nickname if new nickname is free to pick.\n" +
@@ -48,7 +47,7 @@ namespace websocketschat.Web.Hubs
                     return;
                 }
 
-                // Смена никнейма.
+                // Change current user nickname.
                 // /change_name=nickname
                 else if (text.ToLower().Contains("change_name="))
                 {
@@ -82,7 +81,7 @@ namespace websocketschat.Web.Hubs
                     return;
                 }
 
-                // Приватное сообщение.
+                // Private message.
                 // /send_to=username&message=text
                 else if (text.ToLower().StartsWith("send_to="))
                 {
@@ -91,11 +90,10 @@ namespace websocketschat.Web.Hubs
 
                     User userMessageGetter = await _userService.GetUserAsync(to);
 
-                    // если получатель и текущий пользовател совпадают
+                    // if sender is a getter too.
                     if (userMessageGetter != connectedUser)
                     {
-                        Console.WriteLine(Context.UserIdentifier + " tried to send message.");
-                   //     await Clients.User(Context.UserIdentifier).SendAsync("Receive", message, userName);
+                        await Clients.User(connectedUser.Username).SendAsync("Receive", message, userName);
                         await Clients.User(userMessageGetter.Username).SendAsync("Receive", message, userName);
                         return;
                     }
@@ -107,7 +105,7 @@ namespace websocketschat.Web.Hubs
                     }
                 }
 
-                // Не команда.
+                // Not a command
                 else
                 {
                     responseMessage = "command " + "/" + text + " is unsupported.";
