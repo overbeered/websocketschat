@@ -40,7 +40,7 @@ namespace websocketschat.Web.Hubs
                 if (text.ToLower().Contains("commands"))
                 {
                     responseMessage = "/change_name=newName - change nickname if new nickname is free to pick.\n" +
-                                      "/send_to=username - sends private message to user if exists.\n" +
+                                      "/send_to=username&message=text - sends private message (text param) to user (username param) if exists.\n" +
                                       "/commands - shows stored commands.";
 
                     await Clients.All.SendAsync("Notify", "Bot: " + responseMessage);
