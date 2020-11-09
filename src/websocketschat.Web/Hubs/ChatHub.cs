@@ -55,7 +55,9 @@ namespace websocketschat.Web.Hubs
 
                     if (newNickname == string.Empty || newNickname == null)
                     {
-                        responseMessage = $"User {userName} tried to change username to \'{newNickname}\' with failure.";
+                        responseMessage = $"You tried to change your username to \'{newNickname}\' with failure.";
+                        await Clients.User(connectedUser.Username).SendAsync("Notify", "Bot: -->" + responseMessage);
+                        return;
                     }
                     else
                     {
@@ -70,15 +72,15 @@ namespace websocketschat.Web.Hubs
                             User updatedUser = await _userService.UpdateUserAsync(user);
 
                             responseMessage = $"User {userName} changed nickname to {updatedUser.Username}.";
+                            await Clients.All.SendAsync("Notify", "Bot: " + responseMessage);
                         }
                         else
                         {
-                            responseMessage = $"User {userName} tried to change nickname to {newNickname} but user with this nickname already exist.";
+                            responseMessage = $"You tried to change nickname to {newNickname} but user with this nickname is belong to other user.";
+                            await Clients.User(connectedUser.Username).SendAsync("Notify", "Bot: -->" + responseMessage);
+                            return;
                         }
                     }
-
-                    await Clients.All.SendAsync("Notify", "Bot: " + responseMessage);
-                    return;
                 }
 
                 // Private message.
@@ -93,14 +95,14 @@ namespace websocketschat.Web.Hubs
                     // if sender is a getter too.
                     if (userMessageGetter != connectedUser)
                     {
-                        await Clients.User(connectedUser.Username).SendAsync("Receive", message, userName);
-                        await Clients.User(userMessageGetter.Username).SendAsync("Receive", message, userName);
+                        await Clients.User(connectedUser.Username).SendAsync("Notify", $"Bot: -->\'{message}\' was sent to {userMessageGetter.Username} successfully.");
+                        await Clients.User(userMessageGetter.Username).SendAsync("Receive", "-->" + message, userName);
                         return;
                     }
                     else
                     {
-                        responseMessage = $"User {userName} tried to send message to {userMessageGetter.Username} but faced the error.";
-                        await Clients.All.SendAsync("Notify", "Bot: " + responseMessage);
+                        responseMessage = $"You tried to send message to yourself.";
+                        await Clients.User(connectedUser.Username).SendAsync("Notify", "Bot: -->" + responseMessage);
                         return;
                     }
                 }
@@ -108,8 +110,8 @@ namespace websocketschat.Web.Hubs
                 // Not a command
                 else
                 {
-                    responseMessage = "command " + "/" + text + " is unsupported.";
-                    await Clients.All.SendAsync("Notify", "Bot: " + responseMessage);
+                    responseMessage = "Your typed command " + "/" + text + " is unsupported.";
+                    await Clients.User(connectedUser.Username).SendAsync("Notify", "Bot: -->" + responseMessage);
                     return;
                 }
             }
