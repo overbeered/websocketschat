@@ -13,5 +13,10 @@ namespace websocketschat.Database.Models
 
         public int? RoleId { get; set; }
         public Role Role { get; set; }
+
+        public override string ToString()
+        {
+            return $"DbUserModel: Id: {Id}\tUsername: {Username}";
+        }
     }
 }

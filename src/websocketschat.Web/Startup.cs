@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +22,8 @@ using websocketschat.Core.Services.Interfaces;
 using websocketschat.Database.Context;
 using websocketschat.Database.Repositories;
 using websocketschat.Web.Helpers.Auth;
-using websocketschat.Web.Helpers.MessageHandler;
 using websocketschat.Web.Hubs;
+using websocketschat.Web.Providers;
 
 namespace websocketschat.Web
 {
@@ -53,8 +54,6 @@ namespace websocketschat.Web
             services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddScoped<IUserService, UserService>();
-
-            services.AddTransient<MessageHandler>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -92,6 +91,7 @@ namespace websocketschat.Web
 
             services.AddCors();
             services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
             services.AddControllers();
         }
 
