@@ -135,19 +135,7 @@ namespace websocketschat.Web.Hubs
 
                     if (userMessageGetter == null)
                     {
-                        if (message == string.Empty || message == null)
-                        {
-                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
-                            {
-                                message = "--> Message can't be null or empty.",
-                                sender_username = "Bot",
-                                getter_username = connectedUser.Username,
-                                roleid = 3
-                            });
-                            return;
-                        }
-
-                        responseMessage = "User with username \'{to}\' does not exist.";
+                        responseMessage = $"User with username \'{to}\' does not exist.";
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
@@ -161,6 +149,19 @@ namespace websocketschat.Web.Hubs
                     // if sender is a getter too.
                     if (userMessageGetter != connectedUser)
                     {
+
+                        if (message == string.Empty || message == null)
+                        {
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "--> Message can't be null or empty.",
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+                            return;
+                        }
+
                         // write to sender what his message was sent to recevier.
                         responseMessage = $"\'{message}\' was sent to {userMessageGetter.Username} successfully.";
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
