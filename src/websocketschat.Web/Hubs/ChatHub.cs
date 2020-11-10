@@ -27,6 +27,18 @@ namespace websocketschat.Web.Hubs
             Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
             User connectedUser = await _userService.GetUserByIdAsync(userId);
 
+            if(connectedUser.IsDeleted == true)
+            {
+                await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                {
+                    message = "--> You're banned in this chat.",
+                    sender_username = "Bot",
+                    getter_username = connectedUser.Username,
+                    roleid = 3
+                });
+                return;
+            }
+
             string responseMessage = text;
 
             if (responseMessage == string.Empty || responseMessage == null)
