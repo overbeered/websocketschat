@@ -53,6 +53,7 @@ namespace websocketschat.Core.Services.Implementations
                     coreUser.RoleId = 2;
                 }
 
+                coreUser.IsDeleted = false;
                 coreUser.PasswordHash = passwordHash;
                 coreUser.PasswordHashingKey = passwordHashingKey;
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using websocketschat.Database.Context;
@@ -9,9 +10,10 @@ using websocketschat.Database.Context;
 namespace websocketschat.Database.Context.Migrations
 {
     [DbContext(typeof(NpgSqlContext))]
-    partial class NpgSqlContextModelSnapshot : ModelSnapshot
+    [Migration("20201110174609_Added isDeleted property")]
+    partial class AddedisDeletedproperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
