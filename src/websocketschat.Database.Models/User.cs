@@ -10,6 +10,7 @@ namespace websocketschat.Database.Models
         public string Username { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordHashingKey { get; set; }
+        public bool IsDeleted { get; set; }
 
         public int? RoleId { get; set; }
         public Role Role { get; set; }

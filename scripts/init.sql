@@ -40,3 +40,8 @@ CREATE UNIQUE INDEX "IX_Users_Username" ON "Users" ("Username");
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
 VALUES ('20201031134017_initial', '3.1.9');
 
+ALTER TABLE "Users" ADD "IsDeleted" boolean NOT NULL DEFAULT FALSE;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20201110174609_Added isDeleted property', '3.1.9');
+

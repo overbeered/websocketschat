@@ -27,6 +27,18 @@ namespace websocketschat.Web.Hubs
             Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
             User connectedUser = await _userService.GetUserByIdAsync(userId);
 
+            if(connectedUser.IsDeleted == true)
+            {
+                await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                {
+                    message = "--> You're banned in this chat.",
+                    sender_username = "Bot",
+                    getter_username = connectedUser.Username,
+                    roleid = 3
+                });
+                return;
+            }
+
             string responseMessage = text;
 
             if (responseMessage == string.Empty || responseMessage == null)
@@ -308,6 +320,158 @@ namespace websocketschat.Web.Hubs
                         else
                         {
                             responseMessage = $"User with username \'{candidateToLoseAdminRoleNickname}\' does not exist.";
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "-->" + responseMessage,
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        responseMessage = "Username can't be null or empty.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
+                    }
+                }
+
+                // Ban user by username.
+                // /ban_user=username
+                else if (text.ToLower().StartsWith("ban_user="))
+                {
+                    //9
+                    if (connectedUser.RoleId != 1)
+                    {
+                        responseMessage = $"You role is \'User\', this command is not allowed to you.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
+                    }
+
+                    string nicknameBan = text.Substring(9);
+
+                    if (nicknameBan != string.Empty && nicknameBan != null)
+                    {
+                        User BannedUser = await _userService.GetUserByUsernameAsync(nicknameBan);
+
+                        if (BannedUser.Username == "root")
+                        {
+                            responseMessage = $"Nobody can't ban \'{BannedUser.Username}\'.";
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "-->" + responseMessage,
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+
+                            return;
+                        }
+
+                        if (BannedUser != null)
+                        {
+                            BannedUser.IsDeleted = true;
+                            User updatedUser = await _userService.UpdateUserAsync(BannedUser);
+
+                            responseMessage = $"User \'{updatedUser.Username}\' banned.";
+
+                            // write to sender what his message was sent to recevier.
+                            await Clients.All.SendAsync("Notify", responseMessage);
+                            return;
+                        }
+                        else
+                        {
+                            responseMessage = $"User with username \'{nicknameBan}\' does not exist.";
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "-->" + responseMessage,
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        responseMessage = "Username can't be null or empty.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
+                    }
+                }
+
+                // Unban user by username.
+                // /unban_user=username
+                else if (text.ToLower().StartsWith("unban_user="))
+                {
+                    //11
+                    if (connectedUser.RoleId != 1)
+                    {
+                        responseMessage = $"You role is \'User\', this command is not allowed to you.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
+                    }
+
+                    string nicknameUnban = text.Substring(11);
+
+                    if (nicknameUnban != string.Empty && nicknameUnban != null)
+                    {
+                        User UnBannedUser = await _userService.GetUserByUsernameAsync(nicknameUnban);
+
+                        if (UnBannedUser.Username == "root")
+                        {
+                            responseMessage = $"\'root\' can't be banned.";
+                            await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                            {
+                                message = "-->" + responseMessage,
+                                sender_username = "Bot",
+                                getter_username = connectedUser.Username,
+                                roleid = 3
+                            });
+
+                            return;
+                        }
+
+                        if (UnBannedUser != null)
+                        {
+                            UnBannedUser.IsDeleted = false;
+                            User updatedUser = await _userService.UpdateUserAsync(UnBannedUser);
+
+                            responseMessage = $"User \'{updatedUser.Username}\' unbanned.";
+
+                            // write to sender what his message was sent to recevier.
+                            await Clients.All.SendAsync("Notify", responseMessage);
+                            return;
+                        }
+                        else
+                        {
+                            responseMessage = $"User with username \'{nicknameUnban}\' does not exist.";
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
