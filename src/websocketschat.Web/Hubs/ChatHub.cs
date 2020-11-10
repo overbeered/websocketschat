@@ -63,8 +63,11 @@ namespace websocketschat.Web.Hubs
                 // /commands
                 if (text.ToLower().Contains("commands"))
                 {
-                    responseMessage = "/change_name=newName - change nickname if new nickname is free to pick.\n" +
-                                      "/send_to=username&message=text - sends private message (text param) to user (username param) if exists.\n" +
+                    responseMessage = "/send_to=username&message=text - sends private message (text param) to user (username param) if exists.\n" +
+                                      "/make_admin=username - Give admin rights to user.\n" +
+                                      "/remove_admin=username - Give admin rights back.\n" +
+                                      "/ban_user=username - Ban user by username.\n" +
+                                      "/unban_user=username - Unban user by username.\n" +
                                       "/commands - shows stored commands.";
 
                     await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
