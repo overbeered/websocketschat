@@ -24,6 +24,7 @@ namespace websocketschat.Database.Context.Configuring
             builder.Property(user => user.Username).IsRequired();
             builder.Property(user => user.PasswordHash).IsRequired();
             builder.Property(user => user.PasswordHashingKey).IsRequired();
+            builder.Property(user => user.IsDeleted).IsRequired();
 
             builder.HasOne(user => user.Role)
                 .WithMany(role => role.Users)
