@@ -64,6 +64,7 @@ namespace websocketschat.Web.Hubs
                 if (text.ToLower().Contains("commands"))
                 {
                     responseMessage = "/send_to=username&message=text - sends private message (text param) to user (username param) if exists.\n" +
+                                      "/change_name=newName - change nickname if new nickname is free to pick.\n" +
                                       "/make_admin=username - Give admin rights to user.\n" +
                                       "/remove_admin=username - Give admin rights back.\n" +
                                       "/ban_user=username - Ban user by username.\n" +
