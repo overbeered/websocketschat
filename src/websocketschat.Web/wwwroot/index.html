@@ -27,10 +27,11 @@
         </div>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-default" placeholder="******">Password</span>
+                <span class="input-group-text" id="inputGroup-sizing-default">Password</span>
             </div>
             <input id="userPassword" type="password" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default">
+                   aria-describedby="inputGroup-sizing-default"
+                   placeholder="******">
         </div>
         <button id="loginBtn" type="button" class="btn btn-primary btn-lg btn-block mb-2" value="Войти">Login</button>
 
@@ -56,17 +57,19 @@
         </div>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-default" placeholder="******">Password</span>
+                <span class="input-group-text" id="inputGroup-sizing-default" >Password</span>
             </div>
             <input type="password" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default" id="userPasswordRegistration">
+                   aria-describedby="inputGroup-sizing-default" id="userPasswordRegistration"
+                   placeholder="******">
         </div>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-default" placeholder="******">Repeate password</span>
+                <span class="input-group-text" id="inputGroup-sizing-default" >Repeate password</span>
             </div>
             <input type="password" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default" id="userPasswordCopyRegistration">
+                   aria-describedby="inputGroup-sizing-default" id="userPasswordCopyRegistration"
+                   placeholder="******">
         </div>
         <button type="button" id="registerBtn" class="btn btn-primary btn-lg btn-block">Registration</button>
 
@@ -110,7 +113,7 @@
     <script src="js/signalr/dist/browser/signalr.min.js"></script>
     <script>
         //Регулярные выражения для валидации
-        const regexPassword = RegExp('(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$');
+        const regexPassword = RegExp('^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$');
         const regexUsername = RegExp('^[a-zA-Z][a-zA-Z0-9-_\.]{1,255}$');
         const hubConnection = new signalR.HubConnectionBuilder()
             .withUrl("/chat", { accessTokenFactory: () => token })
@@ -200,9 +203,12 @@
         document.getElementById("loginBtn").addEventListener("click", function (e) {
             let username = document.getElementById("userName").value;
             let password = document.getElementById("userPassword").value;
-            
-            if (regexUsername.test(username) && regexPassword.test(password)){
-                
+           
+            if (!regexUsername.test(username)){
+                alert("Вы не прошли валидацию, не правильный username");
+            } else if (!regexUsername.test(password)) {
+                alert("Вы не прошли валидацию, не правильный password");
+            } else {
                 var request = new XMLHttpRequest();
                 // посылаем запрос на адрес "/token", в ответ получим токен и имя пользователя
                 request.open("POST", "api/Accounts/token", true);
@@ -225,10 +231,7 @@
 
                 // отправляем запрос на аутентификацию
                 request.send("username=" + username + "&password=" + password);
-            } else {
-                alert("Вы не прошли валидацию");
-            }
-           
+            } 
         });
 
         document.getElementById("sendBtn").addEventListener("click", function (e) {
@@ -245,7 +248,11 @@
             let username = document.getElementById("userNameRegistration").value;
             let password = document.getElementById("userPasswordRegistration").value;
 
-            if (regexUsername.test(username) && regexPassword.test(password)){
+            if (!regexUsername.test(username)){
+                alert("Вы не прошли валидацию, не правильный username");
+            } else if (!regexUsername.test(password)) {
+                alert("Вы не прошли валидацию, не правильный password");
+            } else {
                 var request = new XMLHttpRequest();
                   // посылаем запрос на адрес "/token", в ответ получим токен и имя пользователя
                 request.open("POST", "api/Accounts/register", true);
@@ -267,9 +274,6 @@
                 } else {
                     alert("Passwords don't match.");
                 }
-
-            } else {
-                alert("Вы не прошли валидацию");
             }
         });
     </script>
