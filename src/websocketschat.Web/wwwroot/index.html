@@ -23,14 +23,15 @@
                 <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
             </div>
             <input id="userName" type="text" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default">
+                   aria-describedby="inputGroup-sizing-default" maxlength="255" required pattern="^[a-zA-Z][a-zA-Z0-9-_\.]">
         </div>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-default" placeholder="******">Password</span>
             </div>
             <input id="userPassword" type="password" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default">
+                   aria-describedby="inputGroup-sizing-default"
+                   maxlength="255" required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
         </div>
         <button id="loginBtn" type="button" class="btn btn-primary btn-lg btn-block mb-2" value="Войти">Login</button>
 
@@ -52,21 +53,23 @@
                 <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
             </div>
             <input type="text" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default" id="userNameRegistration">
+                   aria-describedby="inputGroup-sizing-default" id="userNameRegistration" maxlength="255" required pattern="^[a-zA-Z][a-zA-Z0-9-_\.]">
         </div>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-default" placeholder="******">Password</span>
             </div>
             <input type="password" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default" id="userPasswordRegistration">
+                   aria-describedby="inputGroup-sizing-default" id="userPasswordRegistration"
+                   maxlength="255" required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
         </div>
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-default" placeholder="******">Repeate password</span>
             </div>
             <input type="password" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default" id="userPasswordCopyRegistration">
+                   aria-describedby="inputGroup-sizing-default" id="userPasswordCopyRegistration"
+                   maxlength="255" required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
         </div>
         <button type="button" id="registerBtn" class="btn btn-primary btn-lg btn-block">Registration</button>
 
@@ -93,7 +96,8 @@
                 <form>
                     <div class="d-flex bd-highlight">
                         <div class="p-2 flex-grow-1 bd-highlight">
-                            <input type="text" id="message" class="form-control" placeholder="Write message...">
+                            <input type="text" id="message" class="form-control" placeholder="Write message..."
+                            maxlength="255">
                         </div>
                         <div class="p-2 bd-highlight">
                             <button type="button" id="sendBtn" class="btn btn-primary mb-2" autofocus>Send</button>
