@@ -85,47 +85,14 @@ namespace websocketschat.Web.Hubs
                 // /change_name=nickname
                 else if (text.ToLower().Contains("change_name="))
                 {
+                    Regex regexUsername = new Regex(@"^[a-zA-Z][a-zA-Z0-9-_\.]{1,255}$");
                     string newNickname = text.Substring(12);
-
-                    if (newNickname == string.Empty || newNickname == null)
+                    if (regexUsername.IsMatch(newNickname))
                     {
-                        responseMessage = $"You tried to change your username to \'{newNickname}\' with failure.";
-
-                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        if (newNickname == string.Empty || newNickname == null)
                         {
-                            message = "-->" + responseMessage,
-                            sender_username = "Bot",
-                            getter_username = connectedUser.Username,
-                            roleid = 3
-                        });
-                        return;
-                    }
-                    else
-                    {
-                        User userWithSameUsername = await _userService.GetUserByUsernameAsync(newNickname);
+                            responseMessage = $"You tried to change your username to \'{newNickname}\' with failure.";
 
-                        if (userWithSameUsername == null)
-                        {
-                            User user = await _userService.GetUserByUsernameAsync(username);
-
-                            user.Username = newNickname;
-
-                            User updatedUser = await _userService.UpdateUserAsync(user);
-
-                            responseMessage = $"User \'{username}\' changed nickname to \'{updatedUser.Username}\'.";
-
-                            await Clients.All.SendAsync("Receive", new
-                            {
-                                message = responseMessage,
-                                sender_username = updatedUser.Username,
-                                getter_username = "",
-                                roleid = updatedUser.RoleId
-                            });
-                            return;
-                        }
-                        else
-                        {
-                            responseMessage = $"You tried to change nickname to \'{newNickname}\' but user with this nickname is belong to other user.";
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
@@ -135,6 +102,54 @@ namespace websocketschat.Web.Hubs
                             });
                             return;
                         }
+                        else
+                        {
+                            User userWithSameUsername = await _userService.GetUserByUsernameAsync(newNickname);
+
+                            if (userWithSameUsername == null)
+                            {
+                                User user = await _userService.GetUserByUsernameAsync(username);
+
+                                user.Username = newNickname;
+
+                                User updatedUser = await _userService.UpdateUserAsync(user);
+
+                                responseMessage = $"User \'{username}\' changed nickname to \'{updatedUser.Username}\'.";
+
+                                await Clients.All.SendAsync("Receive", new
+                                {
+                                    message = responseMessage,
+                                    sender_username = updatedUser.Username,
+                                    getter_username = "",
+                                    roleid = updatedUser.RoleId
+                                });
+                                return;
+                            }
+                            else
+                            {
+                                responseMessage = $"You tried to change nickname to \'{newNickname}\' but user with this nickname is belong to other user.";
+                                await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                                {
+                                    message = "-->" + responseMessage,
+                                    sender_username = "Bot",
+                                    getter_username = connectedUser.Username,
+                                    roleid = 3
+                                });
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        responseMessage = $"You tried to change nickname to \'{newNickname}\' but you didn't pass validation.";
+                        await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
+                        {
+                            message = "-->" + responseMessage,
+                            sender_username = "Bot",
+                            getter_username = connectedUser.Username,
+                            roleid = 3
+                        });
+                        return;
                     }
                 }
 
