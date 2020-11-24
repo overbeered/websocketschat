@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using websocketschat.Core.Models;
 using websocketschat.Core.Services.Interfaces;
+using websocketschat.Web.Helpers;
 
 namespace websocketschat.Web.Hubs
 {
@@ -18,10 +19,12 @@ namespace websocketschat.Web.Hubs
     {
         private readonly ILogger<ChatHub> _logger;
         private readonly IUserService _userService;
-        public ChatHub(ILogger<ChatHub> logger, IUserService userService)
+        private readonly UsersContext _usersContext;
+        public ChatHub(ILogger<ChatHub> logger, IUserService userService, UsersContext usersContext)
         {
             _logger = logger;
             _userService = userService;
+            _usersContext = usersContext;
         }
         public async Task Send(string username, string text)
         {
@@ -547,10 +550,12 @@ namespace websocketschat.Web.Hubs
         #region Connect/Disconnect stuff
         public override async Task OnConnectedAsync()
         {
-             Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
+            Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
             User connectedUser = await _userService.GetUserByIdAsync(userId);
 
-            await Clients.All.SendAsync("Notify", $"{connectedUser.Username} joined the chat.");
+            _usersContext.UsersOnline++;
+
+            await Clients.All.SendAsync("Notify", $"{connectedUser.Username} joined the chat. Users connected: {_usersContext.UsersOnline}");
             await base.OnConnectedAsync();
         }
         public override async Task OnDisconnectedAsync(Exception exception)
@@ -558,7 +563,9 @@ namespace websocketschat.Web.Hubs
             Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
             User connectedUser = await _userService.GetUserByIdAsync(userId);
 
-            await Clients.All.SendAsync("Notify", $"{connectedUser.Username} left the chat.");
+            _usersContext.UsersOnline--;
+
+            await Clients.All.SendAsync("Notify", $"{connectedUser.Username} left the chat. Users connected: {_usersContext.UsersOnline}");
             await base.OnDisconnectedAsync(exception);
         }
         #endregion

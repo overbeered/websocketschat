@@ -21,6 +21,7 @@ using websocketschat.Core.Services.Implementations;
 using websocketschat.Core.Services.Interfaces;
 using websocketschat.Database.Context;
 using websocketschat.Database.Repositories;
+using websocketschat.Web.Helpers;
 using websocketschat.Web.Helpers.Auth;
 using websocketschat.Web.Hubs;
 using websocketschat.Web.Providers;
@@ -52,6 +53,8 @@ namespace websocketschat.Web
                 options.UseNpgsql(connectionString));
 
             services.AddTransient<IUserRepository, UserRepository>();
+
+            services.AddSingleton<UsersContext>();
 
             services.AddScoped<IUserService, UserService>();
 
