@@ -205,9 +205,9 @@
             let password = document.getElementById("userPassword").value;
            
             if (!regexUsername.test(username)){
-                alert("Вы не прошли валидацию, не правильный username");
+                alert("Invalid username, try other one.");
             } else if (!regexUsername.test(password)) {
-                alert("Вы не прошли валидацию, не правильный password");
+                alert("Invalid password, try other one.");
             } else {
                 var request = new XMLHttpRequest();
                 // посылаем запрос на адрес "/token", в ответ получим токен и имя пользователя
@@ -249,9 +249,9 @@
             let password = document.getElementById("userPasswordRegistration").value;
 
             if (!regexUsername.test(username)){
-                alert("Вы не прошли валидацию, не правильный username");
+                alert("Invalid username, try other one.");
             } else if (!regexUsername.test(password)) {
-                alert("Вы не прошли валидацию, не правильный password");
+                alert("Invalid password, try other one.");
             } else {
                 var request = new XMLHttpRequest();
                   // посылаем запрос на адрес "/token", в ответ получим токен и имя пользователя
