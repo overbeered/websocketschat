@@ -215,8 +215,8 @@
                 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
                 request.addEventListener("load", function () {
-                        if (request.status < 400) { // если запрос успешный
-                    
+                    if (request.status < 400) { // если запрос успешный
+
                         let data = JSON.parse(request.response);   // парсим ответ
                         token = data.access_token;
                         username = data.username;
@@ -226,6 +226,9 @@
                                 console.error(err.toString());
                                 //  document.getElementById("loginBtn").disabled = true;
                             });
+                    }
+                    else {
+                        alert("Invalid username or password.");
                     }
                 });
 
