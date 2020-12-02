@@ -2,7 +2,7 @@
 
 ### first of all
 ```
-git clone https://github.com/overbeered/websocketschat.git
+git clone https://github.com/q00Dree/websockets-chat.git
 ```
 ### then build docker containers
 ```
