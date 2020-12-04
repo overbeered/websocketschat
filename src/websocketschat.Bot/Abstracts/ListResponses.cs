@@ -5,19 +5,6 @@ namespace websocketschat.Bot.Abstracts
     abstract class ListResponses
     {
         /// <summary>
-        /// Рандомный индекс
-        /// </summary>
-        /// <param name="interval"></param>
-        /// <returns></returns>
-        protected int RandomIndex(int maxInterval)
-        {
-            Random random = new Random();
-
-            return random.Next(0, maxInterval);
-
-        }
-
-        /// <summary>
         /// Приветсвие
         /// </summary>
         /// <returns></returns>
@@ -36,10 +23,21 @@ namespace websocketschat.Bot.Abstracts
         public abstract string Time();
 
         /// <summary>
-        /// Время
+        /// Прощание
         /// </summary>
         /// <returns></returns>
         public abstract string Farewell();
 
+        /// <summary>
+        /// Посоветуйте фильм
+        /// </summary>
+        /// <returns></returns>
+        public abstract string RecommendMovie();
+
+        /// <summary>
+        /// Посоветуйте трек
+        /// </summary>
+        /// <returns></returns>
+        public abstract string RecommendTrack();
     }
 }

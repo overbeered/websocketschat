@@ -33,6 +33,14 @@ namespace websocketschat.Bot
             {
                 return listRussianResponses.Farewell();
             }
+            else if (command.IndexOf("посоветуй трек") != -1)
+            {
+                return listRussianResponses.RecommendTrack();
+            }
+            else if (command.IndexOf("посоветуй фильм") != -1)
+            {
+                return listRussianResponses.RecommendTrack();
+            }
 
 
             return "Я вас не понимаю";
@@ -63,6 +71,14 @@ namespace websocketschat.Bot
             else if (command.IndexOf("bye") != -1 || command.IndexOf("goodbye") != -1)
             {
                 return listEnglishResponses.Farewell();
+            }
+            else if (command.IndexOf("recommend a track") != -1)
+            {
+                return listRussianResponses.RecommendTrack();
+            }
+            else if (command.IndexOf("recommend a movie") != -1)
+            {
+                return listRussianResponses.RecommendTrack();
             }
 
 
