@@ -1,17 +1,11 @@
-﻿using websocketschat.Core.Services.Interfaces;
+﻿using websocketschat.Bot.Interfaces;
 
 namespace websocketschat.Bot
 {
-    /// <summary>
-    /// Бот
-    /// </summary>
+
     public class Bot : IBotManager
     {
-        /// <summary>
-        /// Обработчик сообщения на русском 
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns>Отевет бота</returns>
+
         public string ProcessRussian(string command)
         {
             ListRussianBotResponses listRussianResponses = new ListRussianBotResponses();
@@ -46,11 +40,6 @@ namespace websocketschat.Bot
             return "Я вас не понимаю";
         }
 
-        /// <summary>
-        /// Обработчик сообщения на английском
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns>Отевет бота</returns>
         public string ProcessEnglish(string command)
         {
             ListEnglishBotResponses listEnglishResponses = new ListEnglishBotResponses();
@@ -74,11 +63,11 @@ namespace websocketschat.Bot
             }
             else if (command.IndexOf("recommend a track") != -1)
             {
-                return listRussianResponses.RecommendTrack();
+                return listEnglishResponses.RecommendTrack();
             }
             else if (command.IndexOf("recommend a movie") != -1)
             {
-                return listRussianResponses.RecommendTrack();
+                return listEnglishResponses.RecommendTrack();
             }
 
 

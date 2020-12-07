@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace websocketschat.Bot.Abstracts
+﻿namespace websocketschat.Bot.Abstracts
 {
     abstract class ListResponses
     {

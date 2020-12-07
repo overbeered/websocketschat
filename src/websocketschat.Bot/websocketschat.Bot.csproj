@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="abstracts\" />
+    <Folder Include="Abstracts\" />
   </ItemGroup>
 
 </Project>
