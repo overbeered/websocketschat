@@ -6,16 +6,10 @@
     public interface IBotManager
     {
         /// <summary>
-        /// Обработчик сообщения на русском 
+        /// Обработчик
         /// </summary>
         /// <param name="command"></param>
         /// <returns>Отевет бота</returns>
-        public string ProcessRussian(string command);
-        /// <summary>
-        /// Обработчик сообщения на английском
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns>Отевет бота</returns>
-        public string ProcessEnglish(string command);
+        public string Process(string command);
     }
 }

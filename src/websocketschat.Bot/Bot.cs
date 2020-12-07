@@ -1,12 +1,22 @@
-﻿using websocketschat.Bot.Interfaces;
+﻿using System.Text.RegularExpressions;
+using websocketschat.Bot.Interfaces;
 
 namespace websocketschat.Bot
 {
 
     public class Bot : IBotManager
     {
+        public Bot()
+        {
 
-        public string ProcessRussian(string command)
+        }
+
+        /// <summary>
+        /// Обработчик сообщения на русском 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns>Отевет бота</returns>
+        private string ProcessRussian(string command)
         {
             ListRussianBotResponses listRussianResponses = new ListRussianBotResponses();
             command = command.ToLower();
@@ -40,7 +50,12 @@ namespace websocketschat.Bot
             return "Я вас не понимаю";
         }
 
-        public string ProcessEnglish(string command)
+        /// <summary>
+        /// Обработчик сообщения на английском
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns>Отевет бота</returns>
+        private string ProcessEnglish(string command)
         {
             ListEnglishBotResponses listEnglishResponses = new ListEnglishBotResponses();
             command = command.ToLower();
@@ -72,6 +87,11 @@ namespace websocketschat.Bot
 
 
             return "I don't understand you";
+        }
+
+        public string Process(string command)
+        {
+            return Regex.IsMatch(command, "[а-яА-ЯеЁ]") ? ProcessRussian(command) : ProcessEnglish(command);
         }
     }
 }
