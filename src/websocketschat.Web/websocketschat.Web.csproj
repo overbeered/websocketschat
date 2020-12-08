@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\websocketschat.Bot\websocketschat.Bot.csproj" />
     <ProjectReference Include="..\websocketschat.Core\websocketschat.Core.csproj" />
     <ProjectReference Include="..\websocketschat.Database.Context\websocketschat.Database.Context.csproj" />
     <ProjectReference Include="..\websocketschat.Database.Repositories\websocketschat.Database.Repositories.csproj" />
