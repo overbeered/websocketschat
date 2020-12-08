@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using websocketschat.Bot.Parsing.Response;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace websocketschat.Bot
 {
@@ -16,12 +17,14 @@ namespace websocketschat.Bot
         private string _password;
         private byte[] _byteArrayBot;
         private HubConnection _hub;
+        private readonly ILogger<BotManager> _logger;
 
-        public BotManager(string name, string password)
+        public BotManager(ILogger<BotManager> logger)
         {
-            _name = name;
-            _password = password;
+            _name = "bot";
+            _password = "bot123";
             _byteArrayBot = System.Text.Encoding.UTF8.GetBytes($"username={_name}&password={_password}");
+            _logger = logger;
         }
 
         /// <summary>
@@ -47,11 +50,13 @@ namespace websocketschat.Bot
             try
             {
                 WebResponse response = await request.GetResponseAsync();
+                _logger.LogInformation($"The bot has registered.");
                 return 201;
             }
             catch (WebException e)
             {
                 var webResponse = (HttpWebResponse)e.Response;
+                _logger.LogInformation($"The bot didn't register");
                 return (int)webResponse.StatusCode;
             }
         }
@@ -68,7 +73,9 @@ namespace websocketschat.Bot
             try
             {
                 Root responseObject = await AuthBotUrlTokenAsync(urlToken);
+                _logger.LogInformation($"Received a token and is preparing to send a post request.");
                 Parsing.ResponseOtDeda.Root root = await AuthBotPostQueryAfterGetTokenAsync(postQueryAfterGetToken, responseObject);
+                _logger.LogInformation($"Received a response after the post request.");
                 _hub = new HubConnectionBuilder()
                     .WithUrl(webToken, options =>
                     {
@@ -77,6 +84,7 @@ namespace websocketschat.Bot
                     .WithAutomaticReconnect()
                     .Build();
                 await _hub.StartAsync();
+                _logger.LogInformation($"The bot was authorized.");
             }
             catch (Exception e)
             {
