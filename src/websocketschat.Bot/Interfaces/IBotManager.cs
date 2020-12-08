@@ -9,13 +9,6 @@ namespace websocketschat.Bot.Interfaces
     {
 
         /// <summary>
-        /// Обработчик
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns>Отевет бота</returns>
-        public string Process(string command);
-
-        /// <summary>
         /// регистрация бота
         /// </summary>
         /// <param name="urlRegister"></param>
@@ -30,5 +23,11 @@ namespace websocketschat.Bot.Interfaces
         /// <param name="webToken"></param>
         /// <returns></returns>
         public Task AuthBotAsync(string urlToken, string postQueryAfterGetToken, string webToken);
+
+        /// <summary>
+        /// Обработчик сообщения от пользователя
+        /// </summary>
+        /// <returns></returns>
+        public Task On();
     }
 }

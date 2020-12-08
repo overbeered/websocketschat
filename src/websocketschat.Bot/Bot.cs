@@ -15,12 +15,96 @@ namespace websocketschat.Bot
     {
         private string _name;
         private string _password;
-        byte[] _byteArrayBot;
+        private byte[] _byteArrayBot;
+        private HubConnection _hub;
+
         public Bot(string name, string password)
         {
             _name = name;
             _password = password;
             _byteArrayBot = System.Text.Encoding.UTF8.GetBytes($"username={_name}&password={_password}");
+        }
+
+        /// <summary>
+        /// регистрация бота
+        /// </summary>
+        /// <param name="urlRegister"></param>
+        /// <returns>статус регистрации</returns>
+        public async Task<int> RegisterBotAsync(string urlRegister)
+        {
+
+            WebRequest request = WebRequest.Create(urlRegister);
+
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentLength = _byteArrayBot.Length;
+
+            using (Stream dataStream = request.GetRequestStream())
+            {
+                dataStream.Write(_byteArrayBot, 0, _byteArrayBot.Length);
+            }
+
+
+            try
+            {
+                WebResponse response = await request.GetResponseAsync();
+                return 201;
+            }
+            catch (WebException e)
+            {
+                var webResponse = (HttpWebResponse)e.Response;
+                return (int)webResponse.StatusCode;
+            }
+        }
+
+        /// <summary>
+        /// Авторизация бота 
+        /// </summary>
+        /// <param name="urlToken"></param>
+        /// <param name="postQueryAfterGetToken"></param>
+        /// <param name="webToken"></param>
+        /// <returns></returns>
+        public async Task AuthBotAsync(string urlToken, string postQueryAfterGetToken, string webToken)
+        {
+            try
+            {
+                Root responseObject = await AuthBotUrlTokenAsync(urlToken);
+                Console.WriteLine("urlToken");
+                Parsing.ResponseOtDeda.Root root = await AuthBotPostQueryAfterGetTokenAsync(postQueryAfterGetToken, responseObject);
+                Console.WriteLine("AuthBotPostQueryAfterGetTokenAsync");
+
+                _hub = new HubConnectionBuilder()
+                    .WithUrl(webToken, options =>
+                    {
+                        options.AccessTokenProvider = () => Task.FromResult(responseObject.access_token);
+                    })
+                    .WithAutomaticReconnect()
+                    .Build();
+                await _hub.StartAsync();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Обработчик сообщения от пользователя
+        /// </summary>
+        /// <returns></returns>
+        public async Task On()
+        {
+            _hub.On<object>("Receive", async (data) => {
+                data = (JsonElement)data;
+                Parsing.ResponseMessage.Root responseObject = JsonSerializer.Deserialize<Parsing.ResponseMessage.Root>(data.ToString());
+                if (responseObject.message.StartsWith("bot"))
+                {
+                    string responseMessage;
+                    responseObject.message = responseObject.message.Remove(0, 4);
+                    responseMessage = Process(responseObject.message);
+                    await Send(responseMessage);
+                }
+            });
         }
 
         /// <summary>
@@ -106,68 +190,9 @@ namespace websocketschat.Bot
         /// </summary>
         /// <param name="command"></param>
         /// <returns>Отевет бота</returns>
-        public string Process(string command)
+        private string Process(string command)
         {
             return Regex.IsMatch(command, "[а-яА-ЯеЁ]") ? ProcessRussian(command) : ProcessEnglish(command);
-        }
-
-        /// <summary>
-        /// регистрация бота
-        /// </summary>
-        /// <param name="urlRegister"></param>
-        /// <returns>статус регистрации</returns>
-        public async Task<int> RegisterBotAsync(string urlRegister)
-        {
-
-            WebRequest request = WebRequest.Create(urlRegister);
-
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = _byteArrayBot.Length;
-
-            using (Stream dataStream = request.GetRequestStream())
-            {
-                dataStream.Write(_byteArrayBot, 0, _byteArrayBot.Length);
-            }
-
-
-            try
-            {
-                WebResponse response = await request.GetResponseAsync();
-                return 201;
-            }
-            catch (WebException e)
-            {
-                var webResponse = (HttpWebResponse)e.Response;
-                return (int)webResponse.StatusCode;
-            }
-        }
-       
-        /// <summary>
-        /// Авторизация бота 
-        /// </summary>
-        /// <param name="urlToken"></param>
-        /// <param name="postQueryAfterGetToken"></param>
-        /// <param name="webToken"></param>
-        /// <returns></returns>
-        public async Task AuthBotAsync(string urlToken, string postQueryAfterGetToken, string webToken)
-        {
-            try
-            {
-                Root responseObject = await AuthBotUrlTokenAsync(urlToken);
-                Parsing.ResponseOtDeda.Root root = await AuthBotPostQueryAfterGetTokenAsync(postQueryAfterGetToken, responseObject);
-                HubConnection hub = new HubConnectionBuilder()
-                    .WithUrl(webToken, options =>
-                    {
-                        options.AccessTokenProvider = () => Task.FromResult(responseObject.access_token);
-                    })
-                    .Build();
-                await hub.StartAsync();
-            }
-            catch(Exception e)
-            {
-                System.Console.WriteLine(e.Message);
-            }
         }
 
         /// <summary>
@@ -230,6 +255,16 @@ namespace websocketschat.Bot
                 }
             }
 
+        }
+        
+        /// <summary>
+        /// отправка сообщения 
+        /// </summary>
+        /// <param name="messadg"></param>
+        /// <returns></returns>
+        private async Task Send(string messadg)
+        {
+            await _hub.InvokeAsync("Send", _name, messadg);
         }
     }
 }
