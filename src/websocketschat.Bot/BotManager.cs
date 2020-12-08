@@ -88,7 +88,7 @@ namespace websocketschat.Bot
             }
             catch (Exception e)
             {
-                System.Console.WriteLine(e.Message);
+                _logger.LogError(e, $"message: {e.Message}");
             }
         }
 
