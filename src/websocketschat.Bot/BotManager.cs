@@ -10,15 +10,14 @@ using System;
 
 namespace websocketschat.Bot
 {
-
-    public class Bot : IBotManager
+    public class BotManager : IBotManager
     {
         private string _name;
         private string _password;
         private byte[] _byteArrayBot;
         private HubConnection _hub;
 
-        public Bot(string name, string password)
+        public BotManager(string name, string password)
         {
             _name = name;
             _password = password;
@@ -69,10 +68,7 @@ namespace websocketschat.Bot
             try
             {
                 Root responseObject = await AuthBotUrlTokenAsync(urlToken);
-                Console.WriteLine("urlToken");
                 Parsing.ResponseOtDeda.Root root = await AuthBotPostQueryAfterGetTokenAsync(postQueryAfterGetToken, responseObject);
-                Console.WriteLine("AuthBotPostQueryAfterGetTokenAsync");
-
                 _hub = new HubConnectionBuilder()
                     .WithUrl(webToken, options =>
                     {
@@ -92,7 +88,7 @@ namespace websocketschat.Bot
         /// Обработчик сообщения от пользователя
         /// </summary>
         /// <returns></returns>
-        public async Task On()
+        public async Task OnAsync()
         {
             _hub.On<object>("Receive", async (data) => {
                 data = (JsonElement)data;
@@ -105,6 +101,13 @@ namespace websocketschat.Bot
                     await Send(responseMessage);
                 }
             });
+        }
+        /// <summary>
+        /// Отключение 
+        /// </summary>
+        public async Task DisconnectAsync()
+        {
+            await _hub.StopAsync();
         }
 
         /// <summary>

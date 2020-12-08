@@ -16,14 +16,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using websocketschat.Bot.Interfaces;
 using websocketschat.Core.Repositories;
 using websocketschat.Core.Services.Implementations;
 using websocketschat.Core.Services.Interfaces;
 using websocketschat.Database.Context;
 using websocketschat.Database.Repositories;
+using websocketschat.Web.BackgroundService;
 using websocketschat.Web.Helpers.Auth;
 using websocketschat.Web.Hubs;
 using websocketschat.Web.Providers;
+using websocketschat.Bot;
 
 namespace websocketschat.Web
 {
@@ -54,6 +57,8 @@ namespace websocketschat.Web
             services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IBotManager, BotManager>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -93,6 +98,7 @@ namespace websocketschat.Web
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
             services.AddControllers();
+            services.AddHostedService<BotBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

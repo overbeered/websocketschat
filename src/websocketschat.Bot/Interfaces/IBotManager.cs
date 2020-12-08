@@ -28,6 +28,11 @@ namespace websocketschat.Bot.Interfaces
         /// Обработчик сообщения от пользователя
         /// </summary>
         /// <returns></returns>
-        public Task On();
+        public Task OnAsync();
+
+        /// <summary>
+        /// Отключение 
+        /// </summary>
+        public Task DisconnectAsync();
     }
 }
