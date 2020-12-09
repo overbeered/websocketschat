@@ -61,7 +61,7 @@ namespace websocketschat.Web
 
             services.AddScoped<IUserService, UserService>();
 
-            services.AddScoped<IBotManager, BotManager>();
+            services.AddTransient<IBotManager, BotManager>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

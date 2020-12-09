@@ -36,7 +36,7 @@ namespace websocketschat.Web.Hubs
                 await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                 {
                     message = "--> You're banned in this chat.",
-                    sender_username = "Bot",
+                    sender_username = "Server",
                     getter_username = connectedUser.Username,
                     roleid = 3
                 });
@@ -50,7 +50,7 @@ namespace websocketschat.Web.Hubs
                 await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                 {
                     message = "--> Message can't be null or empty.",
-                    sender_username = "Bot",
+                    sender_username = "Server",
                     getter_username = connectedUser.Username,
                     roleid = 3
                 });
@@ -78,7 +78,7 @@ namespace websocketschat.Web.Hubs
                     await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                     {
                         message = "-->" + responseMessage,
-                        sender_username = "Bot",
+                        sender_username = "Server",
                         getter_username = connectedUser.Username,
                         roleid = 3
                     });
@@ -100,7 +100,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -135,7 +135,7 @@ namespace websocketschat.Web.Hubs
                                 await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                                 {
                                     message = "-->" + responseMessage,
-                                    sender_username = "Bot",
+                                    sender_username = "Server",
                                     getter_username = connectedUser.Username,
                                     roleid = 3
                                 });
@@ -149,7 +149,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -172,7 +172,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -188,7 +188,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "--> Message can't be null or empty.",
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -200,7 +200,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -221,7 +221,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -239,7 +239,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -270,7 +270,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -283,7 +283,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -302,7 +302,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -321,7 +321,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -346,7 +346,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -359,7 +359,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -378,7 +378,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -397,7 +397,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -422,7 +422,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -435,7 +435,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -454,7 +454,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -473,7 +473,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -498,7 +498,7 @@ namespace websocketschat.Web.Hubs
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                             {
                                 message = "-->" + responseMessage,
-                                sender_username = "Bot",
+                                sender_username = "Server",
                                 getter_username = connectedUser.Username,
                                 roleid = 3
                             });
@@ -511,7 +511,7 @@ namespace websocketschat.Web.Hubs
                         await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                         {
                             message = "-->" + responseMessage,
-                            sender_username = "Bot",
+                            sender_username = "Server",
                             getter_username = connectedUser.Username,
                             roleid = 3
                         });
@@ -527,7 +527,7 @@ namespace websocketschat.Web.Hubs
                     await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                     {
                         message = "-->" + responseMessage,
-                        sender_username = "Bot",
+                        sender_username = "Server",
                         getter_username = connectedUser.Username,
                         roleid = 3
                     });

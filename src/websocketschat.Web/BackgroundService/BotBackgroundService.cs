@@ -21,20 +21,17 @@ namespace websocketschat.Web.BackgroundService
             _bot.AuthBotAsync("http://79.143.31.13/api/accounts/token",
                 "http://79.143.31.13/chat/negotiate?negotiateVersion=1",
                 "http://79.143.31.13/chat");
-            while (true)
+
+            try
             {
-                try
-                {
-                    _bot.OnAsync();
-                }
-                catch
-                {
-                    _bot.AuthBotAsync("http://79.143.31.13/api/accounts/token",
-                   "http://79.143.31.13/chat/negotiate?negotiateVersion=1",
-                   "http://79.143.31.13/chat");
-                    _bot.OnAsync();
-                }
+                _bot.OnAsync();
             }
+            catch
+            {
+                StartAsync(stoppingToken);
+            }
+
+            return Task.CompletedTask;
         }
         
 
