@@ -101,7 +101,7 @@ namespace websocketschat.Web
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
             services.AddControllers();
-            services.AddHostedService<BotBackgroundService>();
+        //    services.AddHostedService<BotBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
