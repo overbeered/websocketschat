@@ -21,7 +21,7 @@ namespace websocketschat.Bot
 
         public BotManager(ILogger<BotManager> logger)
         {
-            _name = "bot";
+            _name = "Bot";
             _password = "bot123";
             _byteArrayBot = System.Text.Encoding.UTF8.GetBytes($"username={_name}&password={_password}");
             _logger = logger;
@@ -101,7 +101,7 @@ namespace websocketschat.Bot
             _hub.On<object>("Receive", async (data) => {
                 data = (JsonElement)data;
                 Parsing.ResponseMessage.Root responseObject = JsonSerializer.Deserialize<Parsing.ResponseMessage.Root>(data.ToString());
-                if (responseObject.message.StartsWith("bot"))
+                if (responseObject.message.StartsWith("Bot"))
                 {
                     string responseMessage;
                     responseObject.message = responseObject.message.Remove(0, 4);
@@ -150,7 +150,7 @@ namespace websocketschat.Bot
             }
             else if (command.IndexOf("посоветуй фильм") != -1)
             {
-                return listRussianResponses.RecommendTrack();
+                return listRussianResponses.RecommendMovie();
             }
 
 
@@ -189,7 +189,7 @@ namespace websocketschat.Bot
             }
             else if (command.IndexOf("recommend a movie") != -1)
             {
-                return listEnglishResponses.RecommendTrack();
+                return listEnglishResponses.RecommendMovie();
             }
 
 
