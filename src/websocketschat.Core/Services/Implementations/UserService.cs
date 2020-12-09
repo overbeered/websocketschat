@@ -48,6 +48,10 @@ namespace websocketschat.Core.Services.Implementations
                 {
                     coreUser.RoleId = 1;
                 }
+                else if(coreUser.Username == "Bot")
+                {
+                    coreUser.RoleId = 3;
+                }
                 else
                 {
                     coreUser.RoleId = 2;

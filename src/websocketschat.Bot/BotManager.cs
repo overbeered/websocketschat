@@ -21,7 +21,7 @@ namespace websocketschat.Bot
 
         public BotManager(ILogger<BotManager> logger)
         {
-            _name = "bot";
+            _name = "Bot";
             _password = "bot123";
             _byteArrayBot = System.Text.Encoding.UTF8.GetBytes($"username={_name}&password={_password}");
             _logger = logger;
