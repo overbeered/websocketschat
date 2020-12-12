@@ -12,3 +12,19 @@ docker-compose -f docker-compose.prod.yml build
 ```
 docker-compose -f docker-compose.prod.yml up -d
 ```
+
+
+### Mini guide how to use our chat.
+
+### 1. List of all commands.
+```
+/commands
+```
+
+### 2. Send private message to concrete user with concrete text.
+```
+/send_to=username&message=yourmessagetext
+```
+
+### 3. See result of /commands to explore more avaliable commands.
+### enjoy =)
