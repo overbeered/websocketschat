@@ -16,7 +16,7 @@ docker-compose -f docker-compose.prod.yml up -d
 
 ### Mini guide how to use our chat.
 
-### 1. List of all commands.
+### 1. List of all chat commands.
 ```
 /commands
 ```
