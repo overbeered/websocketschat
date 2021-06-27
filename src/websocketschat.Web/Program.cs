@@ -16,9 +16,6 @@ namespace websocketschat.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-                .ConfigureServices(services =>
-                        services.AddHostedService<BotBackgroundService>()
-                );
+                });
     }
 }
