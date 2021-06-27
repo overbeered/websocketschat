@@ -1,30 +1,12 @@
-# websocketschat
-
-### first of all
+### Для того, чтобы развернуть приложение, используйте следующую команду.
 ```
-git clone https://github.com/q00Dree/websockets-chat.git
-```
-### then build docker containers
-```
-docker-compose -f docker-compose.prod.yml build
-```
-### and then run these containers
-```
-docker-compose -f docker-compose.prod.yml up -d
+git clone https://github.com/overbeered/websocketschat.git \
+&& cd anomaly-detection \
+&& cd deploy \
+&& bash deploy.sh
 ```
 
-
-### Mini guide how to use our chat.
-
-### 1. List of all chat commands.
+### Список доступных команд.
 ```
 /commands
 ```
-
-### 2. Send private message to concrete user with concrete text.
-```
-/send_to=username&message=yourmessagetext
-```
-
-### 3. See result of /commands to explore more avaliable commands.
-### enjoy =)
