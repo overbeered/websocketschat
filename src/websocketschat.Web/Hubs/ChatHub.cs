@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -31,7 +28,7 @@ namespace websocketschat.Web.Hubs
             Guid userId = Guid.Parse(Context.User.FindFirstValue("Guid"));
             User connectedUser = await _userService.GetUserByIdAsync(userId);
 
-            if(connectedUser.IsDeleted == true)
+            if (connectedUser.IsDeleted == true)
             {
                 await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
                 {
@@ -248,12 +245,12 @@ namespace websocketschat.Web.Hubs
 
                     // 11 symbols
                     string newAdminNickname = text.Substring(11);
-                    
-                    if(newAdminNickname != string.Empty && newAdminNickname != null)
+
+                    if (newAdminNickname != string.Empty && newAdminNickname != null)
                     {
                         User newAdmin = await _userService.GetUserByUsernameAsync(newAdminNickname);
 
-                        if(newAdmin != null)
+                        if (newAdmin != null)
                         {
                             newAdmin.RoleId = 1;
                             User updatedUser = await _userService.UpdateUserAsync(newAdmin);
@@ -315,7 +312,7 @@ namespace websocketschat.Web.Hubs
                     {
                         User newAdmin = await _userService.GetUserByUsernameAsync(candidateToLoseAdminRoleNickname);
 
-                        if(newAdmin.Username == "root")
+                        if (newAdmin.Username == "root")
                         {
                             responseMessage = $"Nobody can't remove admin rights from \'{newAdmin.Username}\'.";
                             await Clients.User(connectedUser.Id.ToString()).SendAsync("Receive", new
