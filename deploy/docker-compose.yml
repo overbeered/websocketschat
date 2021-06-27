@@ -1,0 +1,41 @@
+version: '3.7'
+
+networks:
+  dev-network:
+    driver: bridge
+
+services:
+
+  chat:
+    image: chat:latest
+    container_name: chat
+    build:
+      context: ../../src/
+      dockerfile: Dockerfile
+    restart: always
+    ports: 
+      - 5000
+    environment:
+      DB_CONNECTION_STRING: 'host=db;port=5432;database=websocketschat_db;username=postgres;password=postgres'
+    depends_on:
+      - db
+    networks:
+      - 'dev-network'
+
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    ports: 
+      - 5432
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'websocketschat_db'
+    volumes:
+      - pgdata:/var/lib/postgresql/data                                                                                        
+    networks:
+      - 'dev-network'
+
+volumes:
+  pgdata:
