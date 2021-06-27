@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace websocketschat.Web.Helpers.Auth
+﻿namespace websocketschat.Web.Helpers.Auth
 {
     public class AuthOptions
     {

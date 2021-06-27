@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace websocketschat.Datatransfer.HttpDto
+﻿namespace websocketschat.Datatransfer.HttpDto
 {
     public class GetUserDto
     {

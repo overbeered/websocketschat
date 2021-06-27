@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace websocketschat.Core.Models
 {
@@ -11,7 +9,7 @@ namespace websocketschat.Core.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordHashingKey { get; set; }
         public bool IsDeleted { get; set; }
-        
+
         public int? RoleId { get; set; }
         public Role Role { get; set; }
 

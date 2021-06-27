@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using websocketschat.Core.Models;
 using websocketschat.Core.Repositories;
 using websocketschat.Database.Context;
-using DbModels = websocketschat.Database.Models;
 using CoreModels = websocketschat.Core.Models;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using DbModels = websocketschat.Database.Models;
 
 namespace websocketschat.Database.Repositories
 {
