@@ -2,19 +2,18 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
-using CoreModels = websocketschat.Core.Models;
 using websocketschat.Core.Services.Interfaces;
 using websocketschat.Datatransfer.HttpDto;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using websocketschat.Web.Helpers.Auth;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.Extensions.Options;
+using CoreModels = websocketschat.Core.Models;
 
 namespace websocketschat.Web.Controllers
 {
@@ -26,8 +25,8 @@ namespace websocketschat.Web.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<AccountsController> _logger;
         private readonly AuthOptions _authOptions;
-        public AccountsController(IUserService userService, 
-                                  IMapper mapper, 
+        public AccountsController(IUserService userService,
+                                  IMapper mapper,
                                   ILogger<AccountsController> logger,
                                   IOptions<AuthOptions> authOptions)
         {

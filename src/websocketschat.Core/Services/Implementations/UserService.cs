@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using websocketschat.Core.Models;
 using websocketschat.Core.Repositories;
@@ -210,7 +209,7 @@ namespace websocketschat.Core.Services.Implementations
         {
             _logger.LogInformation($"Invoked UserService.UpdateUserAsync with data [Username: {user.Username}]");
 
-            if(await _userRepository.UserExistsByIdAsync(user.Id))
+            if (await _userRepository.UserExistsByIdAsync(user.Id))
             {
                 return await _userRepository.UpdateUserAsync(user);
             }
