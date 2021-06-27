@@ -10,11 +10,11 @@ services:
     image: chat:latest
     container_name: chat
     build:
-      context: ../../src/
+      context: ../src/
       dockerfile: Dockerfile
     restart: always
     ports: 
-      - 5000
+      - 5000:5000
     environment:
       DB_CONNECTION_STRING: 'host=db;port=5432;database=websocketschat_db;username=postgres;password=postgres'
     depends_on:
@@ -27,7 +27,7 @@ services:
     container_name: db
     restart: always
     ports: 
-      - "5001":"5432"
+      - 5001:5432
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
