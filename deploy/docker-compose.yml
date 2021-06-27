@@ -33,9 +33,9 @@ services:
       POSTGRES_PASSWORD: 'postgres'
       POSTGRES_DB: 'websocketschat_db'
     volumes:
-      - pgdata:/var/lib/postgresql/data                                                                                        
+      - pgdata_websockets:/var/lib/postgresql/data                                                                                        
     networks:
       - 'dev-network'
 
 volumes:
-  pgdata:
+  pgdata_websockets:
