@@ -1,32 +1,23 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 
 LABEL author="Arthur Safiullin"
 
 WORKDIR /app
-# EXPOSE 80 # comment this out because I expose in docker-compose for consistancy
+EXPOSE 5000
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-
-COPY ./websocketschat.Core/websocketschat.Core.csproj/ ./websocketschat.Core/
-COPY ./websocketschat.Database.Models/websocketschat.Database.Models.csproj/ ./websocketschat.Database.Models/
-COPY ./websocketschat.Database.Repositories/websocketschat.Database.Repositories.csproj/ ./websocketschat.Database.Repositories/
-COPY ./websocketschat.Database.Context/websocketschat.Database.Context.csproj/ ./websocketschat.Database.Context/
-COPY ./websocketschat.Datatransfer.HttpDto/websocketschat.Datatransfer.HttpDto.csproj/ ./websocketschat.Datatransfer.HttpDto/
 COPY ./websocketschat.Web/websocketschat.Web.csproj/ ./websocketschat.Web/
-COPY ./websocketschat.sln ./
-
-RUN dotnet restore
-COPY ./ ./
-
-WORKDIR /src/websocketschat.Web
-RUN dotnet build "websocketschat.Web.csproj" -o app/build/
+RUN dotnet restore "websocketschat.Web/websocketschat.Web.csproj"
+COPY . .
+WORKDIR "/src/websocketschat.Web"
+RUN dotnet build "websocketschat.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "websocketschat.Web.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish app/publish .
-ENV ASPNETCORE_URLS=http://+:80
+COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:5000
 ENTRYPOINT ["dotnet", "websocketschat.Web.dll"]
